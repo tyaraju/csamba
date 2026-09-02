@@ -17,11 +17,13 @@ $event_query = csamba_upcoming_events(6);
         ?>
           <article class="swiper-slide featured-slide" data-label="<?php echo esc_attr($slide['title']); ?>" data-color="<?php echo esc_attr($slide['color']); ?>" data-type="<?php echo esc_attr($slide['type']); ?>">
             <div class="featured-media"><img loading="eager" src="<?php echo esc_url($slide['image']); ?>" alt="<?php echo esc_attr($slide['title']); ?>"></div>
-            <div class="featured-copy" style="--featured-color:<?php echo esc_attr($slide['color']); ?>">
-              <span class="eyebrow">EM DESTAQUE</span>
+            <div class="featured-copy" style="
+                --featured-color: <?php echo esc_attr($slide['color']); ?>;
+                background: <?php echo esc_attr($slide['background']); ?>;
+              ">
               <h1><?php echo esc_html($slide['title']); ?></h1>
               <?php if ($slide['subtitle']): ?><h2><?php echo esc_html($slide['subtitle']); ?></h2><?php endif; ?>
-              <p><?php echo esc_html($slide['excerpt']); ?></p>
+              <?php if ($slide['descricao']): ?><p><?php echo esc_html($slide['descricao']); ?></p><?php endif; ?>
               <a class="button button-light" href="<?php echo esc_url($slide['url']); ?>"><?php echo esc_html($slide['cta']); ?></a>
             </div>
           </article>
@@ -34,7 +36,8 @@ $event_query = csamba_upcoming_events(6);
       </div>
     </div>
     <aside class="featured-tabs" aria-label="Outros destaques">
-      <div class="featured-tabs-title"><strong>OUTROS DESTAQUES</strong><span>Escolha outro destaque</span></div>
+      <div class="featured-tabs-title">OUTROS <strong>DESTAQUES</strong></div>
+      <div class="featured-tabs-subtitle">Navegue abaixo para acessar os nossos destaques</div>
       <div class="featured-pagination"></div>
     </aside>
   </section>
@@ -43,10 +46,35 @@ $event_query = csamba_upcoming_events(6);
     <div class="section-block houses">
       <header class="section-heading"><p>CASAS</p><h2>DE SAMBA E PAGODE</h2></header>
       <?php $house=$houses[0]??null; ?>
-      <article class="house-card">
+      <article class="house-card">        
+        <?php if ($house): ?>
+          <a href="<?php echo esc_url(get_permalink($house->ID)); ?>" class="house-card-link">
+        <?php endif; ?>
         <img loading="lazy" src="<?php echo esc_url($house ? csamba_image_url($house->ID,'csamba-card','Casa de samba') : csamba_placeholder('Casa de samba')); ?>" alt="">
-        <div><h3><?php echo $house ? esc_html(get_the_title($house)) : 'Casa de samba'; ?></h3><p><?php echo $house ? esc_html(wp_trim_words(wp_strip_all_tags($house->post_content),24)) : 'Cadastre casas de samba no painel para preencher esta seção.'; ?></p></div>
+        <div>
+          <h3><?php echo $house ? esc_html(get_the_title($house)) : 'Casa de samba'; ?></h3>
+          <p>
+            <?php
+              echo $house
+                ? esc_html(
+                    wp_trim_words(
+                      wp_strip_all_tags(
+                        function_exists('get_field')
+                          ? get_field('casa_descricao', $house->ID)
+                          : $house->post_content
+                      ),
+                      24
+                    )
+                  )
+                : 'Cadastre casas de samba no painel para preencher esta seção.';
+              ?>
+          </p>
+        </div>
+        <?php if ($house): ?>
+          </a>
+        <?php endif; ?>
       </article>
+      
     </div>
 
     <div class="section-block featured-bands">

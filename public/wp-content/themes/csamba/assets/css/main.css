@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'ITC Avant Garde Gothic LT Bold';
-  src: url('../../assets/fonts/itcavantgardegothicltbold.ttf') format('truetype');
+  src: url('../../assets/fonts/ITC Avant Garde Gothic LT Bold/itcavantgardegothicltbold.ttf') format('truetype');
   font-display: swap;
   font-style: normal;
   font-weight: 700;
@@ -14,8 +14,10 @@
   --cs-bg: #ECECEC;
   --cs-surface: #fff;
   --cs-radius: 0px;
-  --cs-gap: 24px;
-  --cs-gap-lg: 32px;
+  --cs-gap: 12px;
+  --cs-gap-lg: 18px;
+  --cs-border: 12px solid white;
+  --cs-border-lg: 18px solid white;
   --cs-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.2);
   --site-width: 1280px;
 }
@@ -55,8 +57,8 @@ background-repeat: repeat-x;}
 .main-nav { width:100%; }
 .main-nav ul { list-style:none; display:flex; flex-wrap:wrap; gap:8px; padding:0; margin:0; }
 .main-nav li { display:flex; }
-.main-nav a { --menu-accent:var(--cs-blue); position:relative; display:flex; align-items:center; min-height:47px; padding:0 15px; font-size:14px; font-weight:700; letter-spacing:.03em; transition: all 1s ease-out 0s; }
-.main-nav a::before { content:''; position:absolute; left:0; top:10px; bottom:10px; width:4px; border-radius:9px; background:var(--menu-accent); }
+.main-nav a { font-family: 'ITC Avant Garde Gothic LT Bold', Arial, sans-serif;--menu-accent:var(--cs-blue); position:relative; display:flex; align-items:center; min-height:44px; padding:0 15px; font-size:14px; font-weight:400; letter-spacing:.03em; transition: all 1s ease-out 0s; }
+.main-nav a::before { content:''; position:absolute; left:0; top:10px; bottom:10px; width:6px; border-radius:0px; background:var(--menu-accent); }
 .main-nav a:hover { background:#f6f7f8; }
 .menu-toggle { display:none; margin:8px 0; border:0; background:var(--cs-ink); color:#fff; border-radius:8px; padding:10px 14px; font-weight:700; }
 
@@ -64,11 +66,11 @@ background-repeat: repeat-x;}
 .home-layout { display:flex; flex-direction:column; gap:42px; }
 
 .featured-shell { display:flex; gap:var(--cs-gap); align-items:stretch; }
-.csamba-featured-swiper { flex:1 1 auto; min-width:0; border-radius:var(--cs-radius); overflow:hidden; box-shadow:var(--cs-shadow); background:#fff; }
-.featured-slide { display:flex !important; min-height:430px; background:#fff; }
-.featured-media { flex:1 1 58%; min-width:0; }
+.csamba-featured-swiper { flex:1 1 auto; min-width:0; border-radius:var(--cs-radius); overflow:unset;  }
+.featured-slide { display:flex !important; min-height:430px; display: flex; gap: var(--cs-gap); align-items: stretch; }
+.featured-media { flex:1 1 58%; min-width:0; box-shadow:var(--cs-shadow);border: var(--cs-border);}
 .featured-media img { width:100%; height:100%; object-fit:cover; }
-.featured-copy { flex:0 0 42%; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:12px; padding:40px; background:var(--featured-color,#9b2dd0); color:#fff; }
+.featured-copy { flex:0 0 42%; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:12px; padding:40px; box-shadow:var(--cs-shadow);border: var(--cs-border);}
 .featured-copy .eyebrow { font-size:12px; font-weight:700; letter-spacing:.12em; }
 .featured-copy h1, .featured-copy h2, .section-heading h2, .section-heading p, .archive-title h1, .archive-featured h2, .band-profile h1 { font-family:'ITC Avant Garde Gothic LT Bold',Arial,sans-serif; }
 .featured-copy h1 { margin:0; font-size:clamp(36px,4vw,64px); line-height:.92; text-transform:uppercase; }
@@ -77,9 +79,9 @@ background-repeat: repeat-x;}
 .button, .btn { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:0 16px; border-radius:8px; background:var(--cs-blue); color:#fff; font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.03em; }
 .button-light { background:#fff; color:#333; }
 
-.featured-tabs { flex:0 0 230px; background:#fff; border-radius:var(--cs-radius); padding:20px; box-shadow:var(--cs-shadow); display:flex; flex-direction:column; gap:16px; }
-.featured-tabs-title strong { display:block; font-family:'ITC Avant Garde Gothic LT Bold',Arial,sans-serif; font-size:20px; line-height:1; }
-.featured-tabs-title span { display:block; margin-top:6px; color:var(--cs-muted); font-size:12px; }
+.featured-tabs { flex:0 0 230px; border-radius:var(--cs-radius); padding:20px; display:flex; font-family:'ITC Avant Garde Gothic LT',Arial,sans-serif; flex-direction:column; gap:16px; text-align: right;}
+.featured-tabs-title strong { font-family:'ITC Avant Garde Gothic LT Bold',Arial,sans-serif; display:block; font-size:20px; line-height:1; }
+.featured-tabs-subtitle { display:block; margin-top:6px; font-family:'ITC Avant Garde Gothic Extra Light',Arial,sans-serif; font-size:14px; font-style:italic; }
 .featured-pagination { position:static !important; display:flex; flex-direction:column; gap:8px; }
 .featured-pagination .swiper-pagination-bullet { width:100% !important; height:auto !important; margin:0 !important; border-radius:7px !important; opacity:1 !important; background:var(--bullet-color,var(--cs-blue)) !important; color:#fff; padding:10px 12px; text-align:left; font-size:11px; font-weight:700; line-height:1.2; transition:transform .2s ease, filter .2s ease; }
 .featured-pagination .swiper-pagination-bullet-active { transform:translateX(-8px); filter:saturate(1.15) brightness(.94); }
@@ -243,3 +245,8 @@ background-repeat: repeat-x;}
 .page-register-band { padding-block:40px 72px; }
 .page-register-band .section-heading h1 { margin:0; font-family:'ITC Avant Garde Gothic LT Bold',Arial,sans-serif; font-size:clamp(34px,5vw,64px); }
 .register-band-content { max-width:900px; margin-top:28px; }
+
+/* Banda — conteúdo estruturado v0.4 */
+.band-meta{margin:.35rem 0 1rem;font-weight:700;opacity:.7}.band-bio>*:first-child{margin-top:0}.band-socials{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.25rem}.band-socials a{padding:.55rem .8rem;border:1px solid currentColor;border-radius:999px;font-size:.85rem;font-weight:700}.band-section{margin-block:clamp(2.5rem,5vw,5rem)}.band-gallery{display:flex;flex-wrap:wrap;gap:24px}.band-gallery>a{flex:1 1 260px;max-width:calc(33.333% - 16px);aspect-ratio:4/3;overflow:hidden;border-radius:10px}.band-gallery img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}.band-gallery a:hover img{transform:scale(1.03)}.band-track-list{display:flex;flex-direction:column;border-top:1px solid #ddd}.band-track{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid #ddd}.band-track .track-number{font-weight:800;opacity:.35;min-width:2.5rem}.band-track strong{flex:1}.band-track a{font-weight:800;text-transform:uppercase;font-size:.8rem}.band-clips{display:flex;flex-wrap:wrap;gap:24px}.band-clip{flex:1 1 300px;max-width:calc(33.333% - 16px)}.band-clip>a{color:inherit;text-decoration:none}.band-clip-media{position:relative;aspect-ratio:16/9;background:#111;border-radius:10px;overflow:hidden}.band-clip-media img{width:100%;height:100%;object-fit:cover;display:block}.play-icon{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#fff;color:#111;font-size:1.25rem;box-shadow:0 6px 28px rgb(0 0 0 / .25)}.band-clip h3{margin:.75rem 0 0}.band-hero-image{object-fit:cover}
+@media (max-width:900px){.band-gallery>a,.band-clip{max-width:calc(50% - 12px)}}
+@media (max-width:620px){.band-gallery>a,.band-clip{max-width:none;flex-basis:100%}.band-track{align-items:flex-start;flex-wrap:wrap}.band-track strong{flex-basis:calc(100% - 4rem)}}

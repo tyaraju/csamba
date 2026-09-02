@@ -1,4 +1,4 @@
-# CSamba Theme v0.3
+# CSamba Theme v0.4
 
 Tema WordPress tradicional (sem Bedrock) com frontend preparado para Vite + Tailwind + Vanilla JS + Swiper.
 
@@ -45,3 +45,7 @@ Foi incluído o template `Cadastre sua banda`. Crie uma Página no WordPress, es
 - Swiper 11
 - Vite preparado para build
 - fonte ITC Avant Garde esperada em `assets/fonts/itcavantgardegothicltbold.ttf`
+
+
+## Banda — campos v0.4
+Com ACF ativo, o cadastro de Banda ganha abas para Sobre, Fotos, Músicas e Clipes. A imagem destacada do WordPress é usada como foto principal. Esta versão permanece compatível com ACF Free, por isso a galeria e listas usam slots fixos (8 fotos, 6 músicas e 6 clipes) em vez de Gallery/Repeater do ACF Pro.

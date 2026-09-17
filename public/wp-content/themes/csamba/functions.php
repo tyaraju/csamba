@@ -20,63 +20,104 @@ function csamba_setup(): void
 }
 add_action('after_setup_theme', 'csamba_setup');
 
-function csamba_assets(): void {
+function csamba_assets(): void
+{
     $vite_dev_server = 'http://localhost:5173';
     $manifest_path = get_template_directory() . '/assets/dist/.vite/manifest.json';
 
-    // Desenvolvimento com Vite
-    if (defined('WP_DEBUG') && WP_DEBUG) {
-        wp_enqueue_script(
-            'vite-client',
-            $vite_dev_server . '/@vite/client',
-            [],
-            null,
-            false
-        );
+    /*
+     * Leaflet
+     * Por enquanto carregamos somente na home.
+     */
+    if (is_front_page()) {
 
-        wp_enqueue_script(
-            'csamba-main',
-            $vite_dev_server . '/src/js/main.js',
-            [],
-            null,
-            true
-        );
+      wp_enqueue_style(
+        'leaflet',
+        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+        [],
+        '1.9.4'
+      );
 
-        return;
+      wp_enqueue_script(
+        'leaflet',
+        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+        [],
+        '1.9.4',
+        true
+      );
     }
 
-    // Produção
-    if (file_exists($manifest_path)) {
-        $manifest = json_decode(
-            file_get_contents($manifest_path),
-            true
-        );
 
-        $entry = $manifest['src/js/main.js'] ?? null;
+    /*
+     * DESENVOLVIMENTO
+     */
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+      wp_enqueue_script(
+        'vite-client',
+        $vite_dev_server . '/@vite/client',
+        [],
+        null,
+        false
+      );
 
-        if ($entry) {
+      wp_enqueue_script(
+        'csamba-main',
+        $vite_dev_server . '/src/js/main.js',
+        is_front_page() ? ['leaflet'] : [],
+        null,
+        true
+      );
 
-            if (!empty($entry['css'])) {
-                foreach ($entry['css'] as $index => $css) {
-                    wp_enqueue_style(
-                        'csamba-main-' . $index,
-                        get_template_directory_uri() . '/assets/dist/' . $css,
-                        [],
-                        CSAMBA_THEME_VERSION
-                    );
-                }
-            }
+    /*
+     * PRODUÇÃO
+     */
+    } elseif (file_exists($manifest_path)) {
 
-            wp_enqueue_script(
-                'csamba-main',
-                get_template_directory_uri() . '/assets/dist/' . $entry['file'],
-                [],
-                CSAMBA_THEME_VERSION,
-                true
+      $manifest = json_decode(
+        file_get_contents($manifest_path),
+        true
+      );
+
+      $entry = $manifest['src/js/main.js'] ?? null;
+      if ($entry) {
+        if (!empty($entry['css'])) {
+          foreach ($entry['css'] as $index => $css) {
+            wp_enqueue_style(
+              'csamba-main-' . $index,
+              get_template_directory_uri() . '/assets/dist/' . $css,
+              [],
+              CSAMBA_THEME_VERSION
             );
+          }
         }
+        wp_enqueue_script(
+          'csamba-main',
+          get_template_directory_uri() . '/assets/dist/' . $entry['file'],
+          is_front_page() ? ['leaflet'] : [],
+          CSAMBA_THEME_VERSION,
+          true
+        );
+      }
+    }
+
+
+    /*
+     * Dados PHP → JavaScript
+     *
+     * Aqui funciona tanto em DEV quanto PROD.
+     */
+    if (wp_script_is('csamba-main', 'enqueued')) {
+
+        wp_localize_script(
+            'csamba-main',
+            'csambaAgenda',
+            [
+                'ajaxUrl' => admin_url('admin-ajax.php')
+            ]
+        );
     }
 }
+
 add_action('wp_enqueue_scripts', 'csamba_assets');
 
 function csamba_vite_module_scripts($tag, $handle, $src) {
@@ -875,3 +916,42 @@ function csamba_acf_admin_notice(): void
   echo '<div class="notice notice-warning"><p><strong>CSamba:</strong> instale e ative o plugin Advanced Custom Fields (ACF) para exibir os campos de Banda, Evento, Destaque e cores do menu.</p></div>';
 }
 add_action('admin_notices', 'csamba_acf_admin_notice');
+
+add_action('wp_ajax_csamba_get_events', 'csamba_get_events');
+add_action('wp_ajax_nopriv_csamba_get_events', 'csamba_get_events');
+
+
+function csamba_get_events() {
+
+    $date = isset($_GET['date'])
+        ? sanitize_text_field($_GET['date'])
+        : current_time('Y-m-d');
+
+    $test_query = new WP_Query([
+        'post_type'      => 'agenda',
+        'post_status'    => 'publish',
+        'posts_per_page' => 10,
+    ]);
+
+    $debug = [];
+
+    while ($test_query->have_posts()) {
+
+        $test_query->the_post();
+
+        $id = get_the_ID();
+
+        $debug[] = [
+            'id'     => $id,
+            'title'  => get_the_title(),
+            'metas'  => get_post_meta($id),
+        ];
+    }
+
+    wp_reset_postdata();
+
+    wp_send_json_success([
+        'received_date' => $date,
+        'debug'         => $debug,
+    ]);
+}

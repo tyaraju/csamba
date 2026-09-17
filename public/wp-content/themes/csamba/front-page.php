@@ -6,6 +6,29 @@ $news = get_posts(['post_type'=>'post','posts_per_page'=>5]);
 $bands = get_posts(['post_type'=>'banda','posts_per_page'=>3]);
 $columns = get_posts(['post_type'=>'coluna','posts_per_page'=>3]);
 $event_query = csamba_upcoming_events(6);
+
+$house_search_query = new WP_Query([
+  'post_type'      => 'casa',
+  'post_status'    => 'publish',
+  'posts_per_page' => -1,
+  'orderby'        => 'title',
+  'order'          => 'ASC',
+]);
+
+$house_search_items = [];
+
+if ($house_search_query->have_posts()) {
+  while ($house_search_query->have_posts()) {
+    $house_search_query->the_post();
+
+    $house_search_items[] = [
+      'title' => get_the_title(),
+      'url'   => get_permalink(),
+    ];
+  }
+}
+
+wp_reset_postdata();
 ?>
 <div class="container home-layout">
   <section class="featured-shell" aria-label="Destaques">
@@ -44,47 +67,144 @@ $event_query = csamba_upcoming_events(6);
 
   <section class="home-duo">
     <div class="section-block houses">
-      <header class="section-heading"><p>CASAS</p><h2>DE SAMBA E PAGODE</h2></header>
-      <?php $house=$houses[0]??null; ?>
-      <article class="house-card">        
+      <header class="section-heading">
+        <p>CASAS</p>
+        <h2>DE SAMBA E PAGODE</h2>
+      </header>
+      <?php $house = $houses[0] ?? null; ?>
+      <article class="house-card">
         <?php if ($house): ?>
           <a href="<?php echo esc_url(get_permalink($house->ID)); ?>" class="house-card-link">
         <?php endif; ?>
-        <img loading="lazy" src="<?php echo esc_url($house ? csamba_image_url($house->ID,'csamba-card','Casa de samba') : csamba_placeholder('Casa de samba')); ?>" alt="">
-        <div>
-          <h3><?php echo $house ? esc_html(get_the_title($house)) : 'Casa de samba'; ?></h3>
-          <p>
-            <?php
-              echo $house
-                ? esc_html(
-                    wp_trim_words(
-                      wp_strip_all_tags(
-                        function_exists('get_field')
-                          ? get_field('casa_descricao', $house->ID)
-                          : $house->post_content
-                      ),
-                      24
-                    )
-                  )
-                : 'Cadastre casas de samba no painel para preencher esta seção.';
+
+          <img
+            loading="lazy" src="<?php echo esc_url( $house ? csamba_image_url($house->ID, 'csamba-card', 'Casa de samba') : csamba_placeholder('Casa de samba')
+            ); ?>"
+            alt=""
+          >
+
+          <div>
+            <h3>
+              <?php echo $house ? esc_html(get_the_title($house)) : 'Casa de samba'; ?>
+            </h3>
+            <p>
+              <?php
+                echo $house ? esc_html( wp_trim_words( wp_strip_all_tags( function_exists('get_field') ? get_field('casa_descricao', $house->ID) : $house->post_content ), 24 ) ) : 'Cadastre casas de samba no painel para preencher esta seção.';
               ?>
-          </p>
-        </div>
+            </p>
+          </div>
+
         <?php if ($house): ?>
           </a>
         <?php endif; ?>
       </article>
-      
+      <!-- Busca de casas -->
+      <div class="house-search">
+        <label for="house-search-input">Veja outras casas</label>
+        <div class="house-search-field">
+          <input type="text" id="house-search-input" placeholder="Digite o nome de uma casa..." autocomplete="off" aria-autocomplete="list" aria-controls="house-search-results">
+          <input type="hidden" id="house-search-url" value="" >
+          <div id="house-search-results" class="house-search-results" role="listbox"></div>
+        </div>
+        <button type="button" id="house-search-button" class="house-search-button button" disabled >
+          VER CASA <span aria-hidden="true">→</span>
+        </button>
+        <script>
+          window.csambaHouses = <?php
+            echo wp_json_encode(
+              $house_search_items,
+              JSON_UNESCAPED_UNICODE
+            );
+          ?>;
+          </script>
+      </div>
     </div>
 
     <div class="section-block featured-bands">
-      <div class="section-heading-row"><header class="section-heading"><p>BANDAS</p><h2>EM DESTAQUE</h2></header><a class="text-link" href="<?php echo esc_url(get_post_type_archive_link('banda')); ?>">Ver todas</a></div>
+      <div class="section-heading-row">
+        <header class="section-heading">
+          <p>BANDAS</p>
+          <h2>EM DESTAQUE</h2>
+        </header>
+        <a class="button button-small" href="<?php echo esc_url(get_post_type_archive_link('banda')); ?>">Ver todas</a>
+      </div>
       <div class="band-cards">
-        <?php foreach($bands as $b): ?><article><img loading="lazy" src="<?php echo esc_url(csamba_image_url($b->ID,'csamba-card',get_the_title($b))); ?>" alt=""><h3><?php echo esc_html(get_the_title($b)); ?></h3><p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($b->post_content),12)); ?></p><a href="<?php echo esc_url(get_permalink($b)); ?>">ver banda</a></article><?php endforeach; ?>
+        <?php foreach($bands as $b): ?>
+          <article>
+            <div class="featured-media">
+              <a href="<?php echo esc_url(get_permalink($b)); ?>">
+                <img loading="lazy" src="<?php echo esc_url(csamba_image_url($b->ID,'csamba-card',get_the_title($b))); ?>" alt="">
+              </a>
+            </div>
+            <h3><a href="<?php echo esc_url(get_permalink($b)); ?>"><?php echo esc_html(get_the_title($b)); ?></a></h3>
+            <p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($b->post_content),12)); ?></p>
+            <a href="<?php echo esc_url(get_permalink($b)); ?>">ver banda</a>
+          </article>
+        <?php endforeach; ?>
       </div>
     </div>
   </section>
-
+  <?php
+    $today = current_time('Y-m-d');
+    $days = [];
+    for ($i = 0; $i < 7; $i++) {
+      $date = date('Y-m-d', strtotime("+{$i} days", strtotime($today)));
+      $days[] = [
+        'date' => $date,
+        'day' => strtoupper(
+          wp_date('D', strtotime($date))
+        ),
+        'label' => wp_date('d/m', strtotime($date))
+      ];
+    }
+  ?>
+  <section class="section-block agenda-home">
+    <header class="section-heading agenda-heading">
+      <div>
+        <h2>
+          HOJE NO SAMBA
+          <span>EM PORTO ALEGRE</span>
+        </h2>
+      </div>
+      <a href="<?php echo esc_url(home_url('/agenda/')); ?>">
+        VER AGENDA COMPLETA →
+      </a>
+    </header>
+    <!-- ABAS -->
+    <div class="agenda-tabs">
+      <?php foreach ($days as $index => $day): ?>
+        <button type="button" class="agenda-tab <?php echo $index === 0 ? 'is-active' : ''; ?>" data-date="<?php echo esc_attr($day['date']); ?>"
+        >
+          <strong>
+            <?php echo esc_html($day['day']); ?>
+          </strong>
+          <span>
+            <?php echo esc_html($day['label']); ?>
+          </span>
+        </button>
+      <?php endforeach; ?>
+    </div>
+    <div class="agenda-content">
+      <!-- EVENTOS -->
+      <div class="agenda-events">
+        <div id="agenda-events-list" class="agenda-events-list" >
+          <p class="agenda-loading">
+            Carregando agenda...
+          </p>
+        </div>
+        <a href="<?php echo esc_url(home_url('/agenda/')); ?>" class="agenda-see-all" id="agenda-see-all">
+          VER TODOS OS EVENTOS DE HOJE →
+        </a>
+      </div>
+      <!-- MAPA -->
+      <div class="agenda-map-wrapper">
+        <div id="agenda-map"></div>
+        <a href="#" class="agenda-open-map" id="agenda-open-map" target="_blank" rel="noopener" >
+          ABRIR NO MAPA
+        </a>
+      </div>
+    </div>
+  </section>
   <section class="content-columns">
     <div class="news-col">
       <header class="section-heading ruled"><p>NOVIDADES</p><h2>CSAMBA</h2></header>

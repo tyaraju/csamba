@@ -15,8 +15,8 @@
 
     const swiper = new Swiper(slider, {
       loop: slides.length > 1,
-      speed: 550,
-      autoplay: slides.length > 1 ? { delay: 6500, disableOnInteraction: false } : false,
+      speed: 10550,
+      autoplay: slides.length > 1 ? { delay: 1006500, disableOnInteraction: false } : false,
       effect: 'slide',
       keyboard: { enabled: true },
       pagination: {

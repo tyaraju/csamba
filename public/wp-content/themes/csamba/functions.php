@@ -917,41 +917,251 @@ function csamba_acf_admin_notice(): void
 }
 add_action('admin_notices', 'csamba_acf_admin_notice');
 
-add_action('wp_ajax_csamba_get_events', 'csamba_get_events');
-add_action('wp_ajax_nopriv_csamba_get_events', 'csamba_get_events');
+
+/**
+ * CSamba — Agenda da Home
+ *
+ * Retorna os eventos de uma data específica para:
+ * - Lista de eventos
+ * - Swiper das bandas do dia
+ * - Mapa Leaflet
+ */
+
+add_action(
+    'wp_ajax_csamba_get_events',
+    'csamba_get_events'
+);
+
+add_action(
+    'wp_ajax_nopriv_csamba_get_events',
+    'csamba_get_events'
+);
 
 
-function csamba_get_events() {
+function csamba_get_events(): void {
+    /*
+     * 1. DATA
+     *
+     * JS envia: 2026-09-20
+     * ACF salva: 20260920
+     */
 
-    $date = isset($_GET['date'])
-        ? sanitize_text_field($_GET['date'])
-        : current_time('Y-m-d');
-
-    $test_query = new WP_Query([
-        'post_type'      => 'agenda',
-        'post_status'    => 'publish',
-        'posts_per_page' => 10,
-    ]);
-
-    $debug = [];
-
-    while ($test_query->have_posts()) {
-
-        $test_query->the_post();
-
-        $id = get_the_ID();
-
-        $debug[] = [
-            'id'     => $id,
-            'title'  => get_the_title(),
-            'metas'  => get_post_meta($id),
-        ];
+    $date = isset($_GET['date']) ? sanitize_text_field(wp_unslash($_GET['date'])) : current_time('Y-m-d');
+    $date_object = DateTimeImmutable::createFromFormat('!Y-m-d', $date, wp_timezone());
+    if ( !$date_object || $date_object->format('Y-m-d') !== $date) {
+      wp_send_json_error(
+        ['message' => 'Data inválida.'], 400
+      );
     }
 
-    wp_reset_postdata();
+    $acf_date = $date_object->format('Ymd');
+    /*
+    * 2. CONSULTA DOS EVENTOS
+    */
 
-    wp_send_json_success([
-        'received_date' => $date,
-        'debug'         => $debug,
+    $query = new WP_Query([
+      'post_type'      => 'evento',
+      'post_status'    => 'publish',
+      'posts_per_page' => 10,
+      'meta_query' => [
+        [
+          'key'     => 'evento_data',
+          'value'   => $acf_date,
+          'compare' => '=',
+        ],
+      ],
+      'meta_key' => 'evento_hora',
+      'orderby'  => 'meta_value',
+      'order'    => 'ASC',
     ]);
+
+    /*
+     * 3. MONTAGEM DO RETORNO
+     */
+    $events = [];
+
+    while ($query->have_posts()) {
+      $query->the_post();
+      $id = get_the_ID();
+      /*
+        * CAMPOS ACF DO EVENTO
+        *
+        * Estes nomes já foram confirmados
+        * no banco do CSamba.
+        */
+
+      $time = function_exists('get_field') ? get_field('evento_hora', $id) : get_post_meta($id, 'evento_hora', true);
+
+      $venue = function_exists('get_field') ? get_field('evento_casa', $id) : get_post_meta($id, 'evento_casa', true);
+
+      $band = function_exists('get_field') ? get_field('evento_banda', $id) : get_post_meta($id, 'evento_banda', true);
+
+      /*
+        * 4. RESOLVER CASA
+        *
+        * O ACF pode retornar:
+        * - WP_Post
+        * - ID
+        */
+
+      $venue_id = 0;
+      if ($venue instanceof WP_Post) {
+        $venue_id = $venue->ID;
+      } elseif (is_numeric($venue)) {
+        $venue_id = (int) $venue;
+      }
+
+      // Garante que o ID pertence ao CPT casa.
+      if (
+        $venue_id &&
+        get_post_type($venue_id) !== 'casa'
+      ) {
+        $venue_id = 0;
+      }
+
+      $venue_name = $venue_id ? get_the_title($venue_id) : '';
+
+      /*
+        * 5. RESOLVER BANDA
+        */
+
+      $band_id = 0;
+
+      if ($band instanceof WP_Post) {
+        $band_id = $band->ID;
+      } elseif (is_numeric($band)) {
+        $band_id = (int) $band;
+      }
+
+      // Garante que o ID pertence ao CPT banda.
+      if (
+        $band_id &&
+        get_post_type($band_id) !== 'banda'
+      ) {
+        $band_id = 0;
+      }
+
+      /*
+        * 6. DADOS DA BANDA PARA O SWIPER
+        */
+      $band_data = null;
+      if ($band_id) {
+        $band_image = '';
+        if (has_post_thumbnail($band_id)) {
+          $band_image = get_the_post_thumbnail_url(
+            $band_id,
+            'csamba-card'
+          );
+        } elseif (function_exists('csamba_image_url')) {
+          $band_image = csamba_image_url(
+            $band_id,
+            'csamba-card',
+            'Banda de samba'
+          );
+        }
+
+        $band_data = [
+          'id'    => $band_id,
+          'title' => get_the_title($band_id),
+          'url'   => get_permalink($band_id),
+          'image' => $band_image ?: '',
+        ];
+      }
+
+      /*
+        * 7. DADOS GEOGRÁFICOS DA CASA
+        *
+        * ATENÇÃO:
+        * Ainda precisamos confirmar os nomes
+        * reais destes campos no CPT casa.
+        */
+
+      $lat = null;
+      $lng = null;
+      $neighborhood = '';
+
+      if ($venue_id) {
+        if (function_exists('get_field')) {
+          $lat_value = get_field(
+            'casa_latitude',
+            $venue_id
+          );
+          $lng_value = get_field(
+            'casa_longitude',
+            $venue_id
+          );
+          $neighborhood = get_field(
+            'casa_bairro',
+            $venue_id
+          );
+        } else {
+          $lat_value = get_post_meta(
+            $venue_id,
+            'casa_latitude',
+            true
+          );
+          $lng_value = get_post_meta(
+            $venue_id,
+            'casa_longitude',
+            true
+          );
+
+          $neighborhood = get_post_meta(
+            $venue_id,
+            'casa_bairro',
+            true
+          );
+      }
+
+      /*
+      * Só envia coordenadas válidas.
+      */
+
+      if ( is_numeric($lat_value) && is_numeric($lng_value) ) {
+        $lat = (float) $lat_value;
+        $lng = (float) $lng_value;
+
+        if (
+          $lat < -90 || $lat > 90 ||
+          $lng < -180 || $lng > 180
+        ) {
+          $lat = null;
+          $lng = null;
+        }
+      }
+    }
+
+
+    /*
+    * 8. EVENTO FINAL
+    *
+    * Formato esperado pelo agenda-home.js.
+    */
+
+    $events[] = [
+      'id'           => $id,
+      'title'        => get_the_title($id),
+      'url'          => get_permalink($id),
+      'time'         => $time ?: '',
+      'band'         => $band_data,
+      'venue_id'     => $venue_id,
+      'venue'        => $venue_name,
+      'neighborhood' => is_scalar($neighborhood) ? (string) $neighborhood : '',
+      'lat'          => $lat,
+      'lng'          => $lng,
+    ];
+  }
+
+  /*
+    * 9. LIMPEZA DO WORDPRESS
+    */
+  wp_reset_postdata();
+
+  /*
+    * 10. RESPOSTA AJAX
+    */
+  wp_send_json_success([
+      'date'   => $date,
+      'events' => $events,
+  ]);
 }

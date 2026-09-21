@@ -144,64 +144,163 @@ wp_reset_postdata();
       </div>
     </div>
   </section>
+ 
   <?php
-    $today = current_time('Y-m-d');
-    $days = [];
-    for ($i = 0; $i < 7; $i++) {
-      $date = date('Y-m-d', strtotime("+{$i} days", strtotime($today)));
-      $days[] = [
-        'date' => $date,
-        'day' => strtoupper(
-          wp_date('D', strtotime($date))
-        ),
-        'label' => wp_date('d/m', strtotime($date))
-      ];
-    }
+  $today = current_datetime();
+
+  $weekdays = [
+    0 => 'DOM',
+    1 => 'SEG',
+    2 => 'TER',
+    3 => 'QUA',
+    4 => 'QUI',
+    5 => 'SEX',
+    6 => 'SÁB',
+  ];
+
+  $days = [];
+
+  for ($i = 0; $i < 7; $i++) {
+    $day = $today->modify("+{$i} days");
+
+    $days[] = [
+      'date'  => $day->format('Y-m-d'),
+      'day'   => $weekdays[(int) $day->format('w')],
+      'label' => $day->format('d/m'),
+    ];
+  }
   ?>
+
   <section class="section-block agenda-home">
-    <header class="section-heading agenda-heading">
-      <div>
-        <h2>
-          HOJE NO SAMBA
-          <span>EM PORTO ALEGRE</span>
-        </h2>
+    <header class="agenda-heading">
+      <div class="section-heading">
+        <p>HOJE NO SAMBA</p>
+        <h2>EM PORTO ALEGRE</h2>
       </div>
       <a href="<?php echo esc_url(home_url('/agenda/')); ?>">
         VER AGENDA COMPLETA →
       </a>
     </header>
-    <!-- ABAS -->
-    <div class="agenda-tabs">
-      <?php foreach ($days as $index => $day): ?>
-        <button type="button" class="agenda-tab <?php echo $index === 0 ? 'is-active' : ''; ?>" data-date="<?php echo esc_attr($day['date']); ?>"
-        >
-          <strong>
-            <?php echo esc_html($day['day']); ?>
-          </strong>
-          <span>
-            <?php echo esc_html($day['label']); ?>
-          </span>
-        </button>
-      <?php endforeach; ?>
-    </div>
-    <div class="agenda-content">
-      <!-- EVENTOS -->
-      <div class="agenda-events">
-        <div id="agenda-events-list" class="agenda-events-list" >
-          <p class="agenda-loading">
-            Carregando agenda...
-          </p>
+    <div class="agenda-shell">
+      <!-- BLOCO ESQUERDO -->
+      <div class="agenda-main">
+      <!-- CARROSSEL DOS DIAS -->
+    <div class="agenda-days">
+
+        <button
+            type="button"
+            class="agenda-days-prev"
+            aria-label="Dia anterior"
+        >‹</button>
+
+        <div class="swiper agenda-days-swiper">
+            <div class="swiper-wrapper">
+
+                <?php foreach ($days as $index => $day): ?>
+
+                      <div class="swiper-slide">
+                          <button
+                              type="button"
+                              class="agenda-tab <?php echo $index === 0 ? 'is-active' : ''; ?>"
+                              data-date="<?php echo esc_attr($day['date']); ?>"
+                              aria-pressed="<?php echo $index === 0 ? 'true' : 'false'; ?>"
+                          >
+                              <strong>
+                                  <?php echo esc_html($day['day']); ?>
+                              </strong>
+
+                              <span>
+                                  <?php echo esc_html($day['label']); ?>
+                              </span>
+                          </button>
+                      </div>
+
+                <?php endforeach; ?>
+
+            </div>
         </div>
-        <a href="<?php echo esc_url(home_url('/agenda/')); ?>" class="agenda-see-all" id="agenda-see-all">
-          VER TODOS OS EVENTOS DE HOJE →
-        </a>
-      </div>
-      <!-- MAPA -->
-      <div class="agenda-map-wrapper">
-        <div id="agenda-map"></div>
-        <a href="#" class="agenda-open-map" id="agenda-open-map" target="_blank" rel="noopener" >
-          ABRIR NO MAPA
-        </a>
+
+        <button
+            type="button"
+            class="agenda-days-next"
+            aria-label="Próximo dia"
+        >›</button>
+
+    </div>
+
+
+    <!-- EVENTOS + BANDAS LADO A LADO -->
+    <div class="agenda-body">
+
+        <!-- COLUNA DE EVENTOS -->
+        <div class="agenda-events">
+
+            <div class="agenda-events-heading">
+                <h3>EVENTOS DO DIA</h3>
+                <p>Confira a programação completa</p>
+            </div>
+
+            <div
+                id="agenda-events-list"
+                class="agenda-events-list"
+                aria-live="polite"
+            >
+                <p class="agenda-loading">
+                    Carregando agenda...
+                </p>
+            </div>
+
+            <a
+                href="<?php echo esc_url(home_url('/agenda/')); ?>"
+                class="agenda-see-all"
+                id="agenda-see-all"
+            >
+                VER TODOS OS EVENTOS DO DIA →
+            </a>
+
+        </div>
+
+
+        <!-- COLUNA DAS BANDAS -->
+        <div class="agenda-bands">
+
+            <div class="agenda-bands-heading">
+
+                <div>
+                    <h3>BANDA EM DESTAQUE</h3>
+                    <p>Conheça quem se apresenta hoje</p>
+                </div>
+
+                <div class="agenda-bands-controls">
+
+                    <button
+                        type="button"
+                        class="agenda-bands-prev"
+                        aria-label="Banda anterior"
+                    >‹</button>
+                    <button
+                        type="button"
+                        class="agenda-bands-next"
+                        aria-label="Próxima banda"
+                    >›</button>
+                </div>
+            </div>
+            <div class="swiper agenda-bands-swiper">
+                <div
+                    class="swiper-wrapper"
+                    id="agenda-bands-list"
+                ></div>
+                <div class="swiper-pagination agenda-bands-pagination"></div>
+            </div>
+            <p
+                class="agenda-bands-empty"
+                id="agenda-bands-empty"
+                hidden
+            >
+                Nenhuma banda vinculada aos eventos deste dia.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </section>

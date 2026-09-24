@@ -938,6 +938,7 @@ add_action(
 );
 
 
+
 function csamba_get_events(): void {
     /*
      * 1. DATA
@@ -975,6 +976,7 @@ function csamba_get_events(): void {
       'order'    => 'ASC',
     ]);
 
+    
     /*
      * 3. MONTAGEM DO RETORNO
      */
@@ -984,18 +986,51 @@ function csamba_get_events(): void {
       $query->the_post();
       $id = get_the_ID();
       /*
-        * CAMPOS ACF DO EVENTO
-        *
-        * Estes nomes já foram confirmados
-        * no banco do CSamba.
-        */
+      * CAMPOS ACF DO EVENTO
+      *
+      * Estes nomes já foram confirmados
+      * no banco do CSamba.
+      */
+      /*
+      * IMAGEM DO EVENTO
+      *
+      * Prioridade:
+      * 1. Imagem destacada do evento
+      * 2. Imagem destacada da banda vinculada
+      * 3. Placeholder do tema
+      */
+
+      $event_image = '';
+      if (has_post_thumbnail($id)) {
+        $event_image = get_the_post_thumbnail_url(
+          $id,
+          'large'
+        );
+      } elseif ($band_id && has_post_thumbnail($band_id)) {
+        $event_image = get_the_post_thumbnail_url(
+            $band_id,
+            'large'
+        );
+      } elseif (function_exists('csamba_placeholder')) {
+          $event_image = csamba_placeholder('Evento de samba');
+      }
+
+
+      /*
+      * DESCRIÇÃO DO EVENTO
+      */
+
+      $description = wp_trim_words(
+        wp_strip_all_tags(
+            get_post_field('post_content', $id)
+        ),
+        35,
+        '…'
+      );
 
       $time = function_exists('get_field') ? get_field('evento_hora', $id) : get_post_meta($id, 'evento_hora', true);
-
       $venue = function_exists('get_field') ? get_field('evento_casa', $id) : get_post_meta($id, 'evento_casa', true);
-
       $band = function_exists('get_field') ? get_field('evento_banda', $id) : get_post_meta($id, 'evento_banda', true);
-
       /*
         * 4. RESOLVER CASA
         *
@@ -1149,6 +1184,8 @@ function csamba_get_events(): void {
       'neighborhood' => is_scalar($neighborhood) ? (string) $neighborhood : '',
       'lat'          => $lat,
       'lng'          => $lng,
+      'image'       => $event_image,
+      'description' => $description,
     ];
   }
 

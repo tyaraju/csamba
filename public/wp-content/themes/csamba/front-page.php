@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 <?php
 $featured = csamba_featured_items(7);
-$houses = get_posts(['post_type'=>'casa','posts_per_page'=>1]);
+$houses = get_posts(['post_type'=>'casa','posts_per_page'=>4]);
 $news = get_posts(['post_type'=>'post','posts_per_page'=>5]);
 $bands = get_posts(['post_type'=>'banda','posts_per_page'=>3]);
 $columns = get_posts(['post_type'=>'coluna','posts_per_page'=>3]);
@@ -66,59 +66,137 @@ wp_reset_postdata();
   </section>
 
   <section class="home-duo">
+    <?php
+      /*
+      * CASAS DE SAMBA E PAGODE
+      *
+      * Utiliza o array $houses existente.
+      * Exibe uma casa principal e até três miniaturas.
+      */
+
+      $featured_houses = array_slice($houses ?? [], 0, 4);
+
+      $house_cards = [];
+
+      foreach ($featured_houses as $house) {
+
+        $id = $house->ID;
+
+        $description = function_exists('get_field')
+          ? get_field('casa_descricao', $id)
+          : '';
+
+        if (empty($description)) {
+          $description = $house->post_content;
+        }
+
+        $description = wp_trim_words(
+          wp_strip_all_tags((string) $description),
+          28,
+          '…'
+        );
+
+        $neighborhood = function_exists('get_field') ? get_field('casa_bairro', $id) : '';
+        $neighborhood = is_scalar($neighborhood) ? trim((string) $neighborhood) : '';
+
+        $house_cards[] = [
+          'id' => $id,
+          'title' => get_the_title($id),
+          'description' => $description,
+          'neighborhood' => $neighborhood,
+          'url' => get_permalink($id),
+          'image' => csamba_image_url(
+            $id,
+            'csamba-card',
+            'Casa de samba'
+          ),
+        ];
+      }
+
+      $main_house = $house_cards[0] ?? null;
+    ?>
+
     <div class="section-block houses">
       <header class="section-heading">
         <p>CASAS</p>
         <h2>DE SAMBA E PAGODE</h2>
       </header>
-      <?php $house = $houses[0] ?? null; ?>
-      <article class="house-card">
-        <?php if ($house): ?>
-          <a href="<?php echo esc_url(get_permalink($house->ID)); ?>" class="house-card-link">
+      <div class="houses-showcase">
+        <?php if ($main_house): ?>
+          <!-- CASA PRINCIPAL -->
+          <article class="houses-featured">
+            <a class="houses-featured-image" id="houses-featured-image" href="<?php echo esc_url($main_house['url']); ?>">
+              <img id="houses-featured-img" src="<?php echo esc_url($main_house['image']); ?>" alt="<?php echo esc_attr($main_house['title']); ?>">
+            </a>
+            <div class="houses-featured-copy">
+              <h3 id="houses-featured-title">
+                <a id="houses-featured-link" class="" href="<?php echo esc_url($main_house['url']); ?>">
+                  <?php echo esc_html($main_house['title']); ?>
+                </a>
+              </h3>
+              <p id="houses-featured-description">
+                <?php echo esc_html($main_house['description']); ?>
+              </p>
+              <a id="houses-featured-link" class="houses-featured-cta" href="<?php echo esc_url($main_house['url']); ?>">
+                CONHECER CASA
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+          <!-- MINIATURAS -->
+          <?php if (count($house_cards) > 1): ?>
+            <div class="houses-thumbnails">
+              <?php foreach (array_slice($house_cards, 1) as $house): ?>
+                <div class="houses-thumbnail-item">
+                <button type="button" class="houses-thumbnail" data-house-id="<?php echo esc_attr($house['id']); ?>" aria-label="Destacar <?php echo esc_attr($house['title']); ?>" aria-pressed="false">
+                  <span class="houses-thumbnail-image">
+                    <a class="houses-thumbnail-link" href="<?php echo esc_url($house['url']); ?>" aria-label="Conhecer <?php echo esc_attr($house['title']); ?>">
+                      <img src="<?php echo esc_url($house['image']); ?>" alt="" loading="lazy">
+                    </a>
+                  </span>
+                  <h3>
+                    <a class="houses-thumbnail-link" href="<?php echo esc_url($house['url']); ?>" aria-label="Conhecer <?php echo esc_attr($house['title']); ?>">
+                      <?php echo esc_html($house['title']); ?>
+                    </a>
+                  </h3>
+                  <?php if ($house['neighborhood']): ?>
+                    <span class="houses-thumbnail-neighborhood"><?php echo esc_html($house['neighborhood']); ?></span>
+                  <?php endif; ?>
+                </button>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
+        <?php else: ?>
+          <p class="houses-empty">
+            Nenhuma casa cadastrada.
+          </p>
         <?php endif; ?>
-
-          <img
-            loading="lazy" src="<?php echo esc_url( $house ? csamba_image_url($house->ID, 'csamba-card', 'Casa de samba') : csamba_placeholder('Casa de samba')
-            ); ?>"
-            alt=""
-          >
-
-          <div>
-            <h3>
-              <?php echo $house ? esc_html(get_the_title($house)) : 'Casa de samba'; ?>
-            </h3>
-            <p>
-              <?php
-                echo $house ? esc_html( wp_trim_words( wp_strip_all_tags( function_exists('get_field') ? get_field('casa_descricao', $house->ID) : $house->post_content ), 24 ) ) : 'Cadastre casas de samba no painel para preencher esta seção.';
-              ?>
-            </p>
-          </div>
-
-        <?php if ($house): ?>
+        <!-- RODAPÉ -->
+        <div class="houses-footer">
+          <a href="<?php echo esc_url(home_url('/casas/')); ?>">
+            VER TODAS AS CASAS
+            <span aria-hidden="true">→</span>
           </a>
-        <?php endif; ?>
-      </article>
-      <!-- Busca de casas -->
-      <div class="house-search">
-        <label for="house-search-input">Veja outras casas</label>
-        <div class="house-search-field">
-          <input type="text" id="house-search-input" placeholder="Digite o nome de uma casa..." autocomplete="off" aria-autocomplete="list" aria-controls="house-search-results">
-          <input type="hidden" id="house-search-url" value="" >
-          <div id="house-search-results" class="house-search-results" role="listbox"></div>
         </div>
-        <button type="button" id="house-search-button" class="house-search-button button" disabled >
-          VER CASA <span aria-hidden="true">→</span>
-        </button>
-        <script>
-          window.csambaHouses = <?php
-            echo wp_json_encode(
-              $house_search_items,
-              JSON_UNESCAPED_UNICODE
-            );
-          ?>;
-          </script>
       </div>
     </div>
+    <?php
+    /*
+    * Dados disponibilizados ao JavaScript.
+    * Não interfere no AJAX da agenda.
+    */
+    if (!empty($house_cards)) {
+      wp_add_inline_script(
+        'csamba-main',
+        'window.csambaHouses = ' . wp_json_encode(
+          $house_cards,
+          JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        ) . ';',
+        'before'
+      );
+    }
+    ?>
 
     <div class="section-block featured-bands">
       <div class="section-heading-row">
@@ -137,7 +215,7 @@ wp_reset_postdata();
               </a>
             </div>
             <h3><a href="<?php echo esc_url(get_permalink($b)); ?>"><?php echo esc_html(get_the_title($b)); ?></a></h3>
-            <p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($b->post_content),12)); ?></p>
+            <p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($b->post_content),20)); ?></p>
             <a href="<?php echo esc_url(get_permalink($b)); ?>">ver banda</a>
           </article>
         <?php endforeach; ?>
@@ -184,124 +262,73 @@ wp_reset_postdata();
     <div class="agenda-shell">
       <!-- BLOCO ESQUERDO -->
       <div class="agenda-main">
-      <!-- CARROSSEL DOS DIAS -->
-    <div class="agenda-days">
-
-        <button
-            type="button"
-            class="agenda-days-prev"
-            aria-label="Dia anterior"
-        >‹</button>
-
-        <div class="swiper agenda-days-swiper">
-            <div class="swiper-wrapper">
-
-                <?php foreach ($days as $index => $day): ?>
-
-                      <div class="swiper-slide">
-                          <button
-                              type="button"
-                              class="agenda-tab <?php echo $index === 0 ? 'is-active' : ''; ?>"
-                              data-date="<?php echo esc_attr($day['date']); ?>"
-                              aria-pressed="<?php echo $index === 0 ? 'true' : 'false'; ?>"
-                          >
-                              <strong>
-                                  <?php echo esc_html($day['day']); ?>
-                              </strong>
-
-                              <span>
-                                  <?php echo esc_html($day['label']); ?>
-                              </span>
-                          </button>
-                      </div>
-
-                <?php endforeach; ?>
-
-            </div>
+        <!-- DIAS DA AGENDA -->
+        <div class="agenda-days">
+          <?php foreach ($days as $index => $day): ?>
+            <button type="button" class="agenda-tab <?php echo $index === 0 ? 'is-active' : ''; ?>"
+              data-date="<?php echo esc_attr($day['date']); ?>" aria-pressed="<?php echo $index === 0 ? 'true' : 'false'; ?>">
+              <strong>
+                <?php echo esc_html($day['day']); ?>
+              </strong>
+              <span>
+                <?php echo esc_html($day['label']); ?>
+              </span>
+            </button>
+          <?php endforeach; ?>
         </div>
-
-        <button
-            type="button"
-            class="agenda-days-next"
-            aria-label="Próximo dia"
-        >›</button>
-
-    </div>
-
-
-    <!-- EVENTOS + BANDAS LADO A LADO -->
-    <div class="agenda-body">
-
-        <!-- COLUNA DE EVENTOS -->
-        <div class="agenda-events">
-
+        <!-- EVENTOS + BANDAS LADO A LADO -->
+        <div class="agenda-body">
+          <!-- COLUNA DE EVENTOS -->
+          <div class="agenda-events">
             <div class="agenda-events-heading">
-                <h3>EVENTOS DO DIA</h3>
-                <p>Confira a programação completa</p>
+              <h3>EVENTOS DO DIA</h3>
+              <p>Confira a programação completa</p>
             </div>
-
-            <div
-                id="agenda-events-list"
-                class="agenda-events-list"
-                aria-live="polite"
-            >
-                <p class="agenda-loading">
-                    Carregando agenda...
-                </p>
+            <div id="agenda-events-list" class="agenda-events-list" aria-live="polite" >
+              <p class="agenda-loading">
+                Carregando agenda...
+              </p>
             </div>
-
-            <a
-                href="<?php echo esc_url(home_url('/agenda/')); ?>"
-                class="agenda-see-all"
-                id="agenda-see-all"
-            >
-                VER TODOS OS EVENTOS DO DIA →
+            <a href="<?php echo esc_url(home_url('/agenda/')); ?>" class="agenda-see-all" id="agenda-see-all">
+              VER TODOS OS EVENTOS DO DIA →
             </a>
-
-        </div>
-
-
-        <!-- COLUNA DAS BANDAS -->
-        <div class="agenda-bands">
-
-            <div class="agenda-bands-heading">
-
-                <div>
-                    <h3>BANDA EM DESTAQUE</h3>
-                    <p>Conheça quem se apresenta hoje</p>
-                </div>
-
-                <div class="agenda-bands-controls">
-
-                    <button
-                        type="button"
-                        class="agenda-bands-prev"
-                        aria-label="Banda anterior"
-                    >‹</button>
-                    <button
-                        type="button"
-                        class="agenda-bands-next"
-                        aria-label="Próxima banda"
-                    >›</button>
-                </div>
+          </div>
+          
+          <!-- ==========================================
+          EVENTO EM DESTAQUE
+          ========================================== -->
+          <div class="agenda-featured">
+            <div class="agenda-featured-heading">
+              <div>
+                <h3>EVENTO EM DESTAQUE</h3>
+                <p>Confira os detalhes e não perca!</p>
+              </div>
+              <div class="agenda-featured-controls">
+                <button type="button" class="agenda-featured-prev" aria-label="Evento anterior">‹</button>
+                <button type="button" class="agenda-featured-next" aria-label="Próximo evento">›</button>
+              </div>
             </div>
-            <div class="swiper agenda-bands-swiper">
-                <div
-                    class="swiper-wrapper"
-                    id="agenda-bands-list"
-                ></div>
-                <div class="swiper-pagination agenda-bands-pagination"></div>
+            <div class="swiper agenda-featured-swiper">
+              <div class="swiper-wrapper" id="agenda-featured-list"></div>
+              <div class="swiper-pagination agenda-featured-pagination"></div>
             </div>
-            <p
-                class="agenda-bands-empty"
-                id="agenda-bands-empty"
-                hidden
-            >
-                Nenhuma banda vinculada aos eventos deste dia.
+            <p class="agenda-featured-empty" id="agenda-featured-empty" hidden >
+              Nenhum evento cadastrado para este dia.
             </p>
           </div>
         </div>
       </div>
+      <!-- ========================================
+      BLOCO DIREITO: MAPA
+      ======================================== -->
+      <aside class="agenda-map-column">
+        <div class="agenda-map-wrapper">
+          <div id="agenda-map" aria-label="Mapa dos eventos de samba em Porto Alegre"></div>
+          <a href="<?php echo esc_url(home_url('/agenda/')); ?>" class="agenda-open-map" id="agenda-open-map">
+            ABRIR NO MAPA →
+          </a>
+        </div>
+      </aside>
     </div>
   </section>
   <section class="content-columns">

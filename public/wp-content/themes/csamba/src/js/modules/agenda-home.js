@@ -1,5 +1,5 @@
 import Swiper from 'swiper';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 export function initAgendaHome() {
   const agenda = document.querySelector('.agenda-home');
@@ -7,64 +7,64 @@ export function initAgendaHome() {
 
   const tabs = [...agenda.querySelectorAll('.agenda-tab')];
   const list = agenda.querySelector('#agenda-events-list');
-  const bandsList = agenda.querySelector('#agenda-bands-list');
-  const bandsEmpty = agenda.querySelector('#agenda-bands-empty');
+
   const seeAll = agenda.querySelector('#agenda-see-all');
   const openMap = agenda.querySelector('#agenda-open-map');
   const mapElement = agenda.querySelector('#agenda-map');
 
-  if (!tabs.length || !list || !bandsList) return;
-
+  if (!tabs.length || !list) return;
   /*
-   * SWIPER DOS DIAS
+   * CARROSSEL DOS EVENTOS EM DESTAQUE
    */
 
-  const daysSwiper = new Swiper(
-    agenda.querySelector('.agenda-days-swiper'), {
-      modules: [Navigation],
-      slidesPerView: 3,
-      spaceBetween: 8,
-      navigation: {
-        prevEl: agenda.querySelector('.agenda-days-prev'),
-        nextEl: agenda.querySelector('.agenda-days-next'),
-      },
-      breakpoints: {
-        480: {
-          slidesPerView: 4,
-        },
+  const featuredSwiper = new Swiper(
+    agenda.querySelector('.agenda-featured-swiper'), {
+      modules: [
+        Navigation,
+        Pagination,
+        Autoplay
+      ],
 
-        768: {
-          slidesPerView: 5,
-        },
-
-        1200: {
-          slidesPerView: 7,
-        },
-      },
-    }
-  );
-
-
-  /*
-   * SWIPER DAS BANDAS
-   */
-
-  const bandsSwiper = new Swiper(
-    agenda.querySelector('.agenda-bands-swiper'), {
-      modules: [Navigation, Pagination],
       slidesPerView: 1,
       slidesPerGroup: 1,
+
       spaceBetween: 0,
+
       speed: 450,
+
+      loop: false,
+
       watchOverflow: true,
+
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true
+      },
+
       navigation: {
-        prevEl: agenda.querySelector('.agenda-bands-prev'),
-        nextEl: agenda.querySelector('.agenda-bands-next'),
+        prevEl: agenda.querySelector(
+          '.agenda-featured-prev'
+        ),
+
+        nextEl: agenda.querySelector(
+          '.agenda-featured-next'
+        )
       },
+
       pagination: {
-        el: agenda.querySelector('.agenda-bands-pagination'),
-        clickable: true,
+        el: agenda.querySelector(
+          '.agenda-featured-pagination'
+        ),
+
+        clickable: true
       },
+
+      on: {
+        slideChange(swiper) {
+          highlightEvent(swiper.activeIndex);
+        }
+      }
     }
   );
 
@@ -125,71 +125,171 @@ export function initAgendaHome() {
    */
 
   function renderEvents(events) {
-
     list.innerHTML = '';
 
     if (!events.length) {
 
       list.innerHTML = `
-                <p class="agenda-empty">
-                    Nenhum evento cadastrado para este dia.
-                </p>
-            `;
+            <p class="agenda-empty">
+                Nenhum evento cadastrado para este dia.
+            </p>
+        `;
 
       return;
     }
 
-    events.forEach(event => {
+    events.forEach((event, index) => {
 
-      const item = document.createElement('a');
+      const item = document.createElement('button');
+
+      item.type = 'button';
 
       item.className = 'agenda-event';
 
-      item.href = event.url;
+      item.dataset.eventIndex = index;
 
-      const venue = event.venue ?
-        `
-                    <span>
-                        ${escapeHTML(event.venue)}
-                    </span>
-                ` :
-        '';
-
-      const neighborhood = event.neighborhood ?
-        `
-                    <span>
-                        ${escapeHTML(event.neighborhood)}
-                    </span>
-                ` :
-        '';
+      item.setAttribute(
+        'aria-label',
+        `Destacar evento: ${event.title}`
+      );
 
       item.innerHTML = `
-                <time class="agenda-event-time">
-                    ${escapeHTML(formatTime(event.time))}
-                </time>
+            <time class="agenda-event-time">
+                ${escapeHTML(event.time || '')}
+            </time>
 
-                <div class="agenda-event-info">
+            <span class="agenda-event-info">
 
-                    <strong class="agenda-event-title">
-                        ${escapeHTML(event.title)}
-                    </strong>
+                <strong class="agenda-event-title">
+                    ${escapeHTML(event.title)}
+                </strong>
 
-                    <div class="agenda-event-meta">
-                        ${venue}
-                        ${neighborhood}
-                    </div>
+                <span class="agenda-event-meta">
 
-                </div>
+                    <span class="agenda-event-venue">
+                        ${escapeHTML(event.venue || '')}
+                    </span>
 
-                <span class="agenda-event-arrow">
-                    ›
+                    ${
+                        event.neighborhood
+                            ? `
+                                <span class="agenda-event-neighborhood">
+                                    ${escapeHTML(event.neighborhood)}
+                                </span>
+                            `
+                            : ''
+                    }
+
                 </span>
-            `;
 
+            </span>
+            <span
+                class="agenda-event-arrow"
+                aria-hidden="true"
+            >
+                ›
+           </span>
+        `;
+      item.addEventListener('click', () => {
+        featuredSwiper.slideTo(index);
+        highlightEvent(index);
+        if (featuredSwiper.autoplay.running) {
+          featuredSwiper.autoplay.stop();
+          featuredSwiper.autoplay.start();
+        }
+      });
       list.appendChild(item);
     });
   }
 
+  /*
+   * EVENTOS EM DESTAQUE
+   */
+
+  function renderFeaturedEvents(events) {
+    const wrapper = agenda.querySelector(
+      '#agenda-featured-list'
+    );
+    const empty = agenda.querySelector(
+      '#agenda-featured-empty'
+    );
+    featuredSwiper.autoplay.stop();
+    wrapper.innerHTML = '';
+    empty.hidden = events.length > 0;
+    if (!events.length) {
+      featuredSwiper.update();
+      return;
+    }
+    events.forEach((event, index) => {
+      const slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+      const image = event.image ?
+        `<img src="${escapeHTML(event.image)}" alt="" loading="${index === 0 ? 'eager' : 'lazy'}">` :
+        `<div class="agenda-featured-placeholder">CSAMBA</div>`;
+      slide.innerHTML = `
+        <article class="agenda-featured-card">
+          <a href="${escapeHTML(event.url)}" class="agenda-featured-image" aria-label="Ver evento ${escapeHTML(event.title)}">
+            ${image}
+          </a>
+          <div class="agenda-featured-copy">
+            <h4>
+                ${escapeHTML(event.title)}
+            </h4>
+            <div class="agenda-featured-meta">
+              <span>
+                ◷ Hoje · ${escapeHTML(event.time || '')}
+              </span>
+              ${ event.venue ? `
+                <span>
+                  ⌖ ${escapeHTML(event.venue)}
+                </span>
+                ` : ''
+              }
+            </div>
+            ${ event.description ? `
+              <p class="agenda-featured-description">
+                ${escapeHTML(event.description)}
+              </p>
+              `
+              : ''
+            }
+            <a href="${escapeHTML(event.url)}" class="agenda-featured-link">
+              VER EVENTO →
+            </a>
+          </div>
+        </article>`;
+      wrapper.appendChild(slide);
+    });
+    featuredSwiper.update();
+    featuredSwiper.slideTo(0, 0);
+    if (featuredSwiper.pagination) {
+      featuredSwiper.pagination.render();
+      featuredSwiper.pagination.update();
+    }
+    highlightEvent(0);
+    if (events.length > 1) {
+      featuredSwiper.autoplay.start();
+    }
+  }
+  /*
+  * SINCRONIZA O EVENTO ATIVO
+  */
+  function highlightEvent(index) {
+    const items = agenda.querySelectorAll(
+      '.agenda-event'
+    );
+    items.forEach((item, itemIndex) => {
+      const isActive = itemIndex === index;
+      item.classList.toggle(
+        'is-featured-active',
+        isActive
+      );
+      item.setAttribute(
+        'aria-pressed',
+        String(isActive)
+      );
+    });
+  }
 
   /*
    * BANDAS DO DIA
@@ -429,15 +529,19 @@ export function initAgendaHome() {
     requestController = new AbortController();
 
     list.innerHTML = `
-            <p class="agenda-loading">
-                Carregando agenda...
-            </p>
-        `;
+      <p class="agenda-loading">
+          Carregando agenda...
+      </p>`;
+      
+    const featuredList = agenda.querySelector('#agenda-featured-list');
+    const featuredEmpty = agenda.querySelector('#agenda-featured-empty');
 
-    bandsList.innerHTML = '';
+    featuredSwiper.autoplay.stop();
 
-    bandsEmpty.hidden = true;
+    featuredList.innerHTML = '';
+    featuredEmpty.hidden = true;
 
+    featuredSwiper.update();
     if (markers) {
       markers.clearLayers();
     }
@@ -470,21 +574,14 @@ export function initAgendaHome() {
       if (!data.success) {
         throw new Error('Erro ao carregar eventos');
       }
-
-      const events = data.data.events || [];
-
+      
+      const events = data.data.events;
       renderEvents(events);
-
-      renderBands(events);
-
+      renderFeaturedEvents(events);
       renderMap(events);
-
     } catch (error) {
-
       if (error.name === 'AbortError') return;
-
       console.error(error);
-
       list.innerHTML = `
                 <p class="agenda-empty">
                     Não foi possível carregar a agenda.

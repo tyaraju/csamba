@@ -4,12 +4,12 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import '../css/app.css';
 import { initAgendaHome } from './modules/agenda-home.js';
+import { initHousesHome } from './modules/houses-home.js';
 // outros imports que você já tiver...
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('main.js carregou');
-
     initAgendaHome();
+    initHousesHome();
 });
 Swiper.use([Autoplay, Keyboard, Pagination]);
 

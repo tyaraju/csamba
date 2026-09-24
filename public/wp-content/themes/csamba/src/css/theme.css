@@ -142,8 +142,6 @@ select {
   color: #fff;
 }
 
-.site-header {}
-
 .brand-row {
   min-height: 128px;
   display: flex;
@@ -293,7 +291,6 @@ select {
 .featured-slide {
   display: flex !important;
   min-height: 430px;
-  display: flex;
   gap: var(--cs-gap-lg);
   align-items: stretch;
   box-sizing: border-box;
@@ -459,7 +456,7 @@ select {
 .home-duo,
 .content-columns {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: var(--cs-gap-lg);
 }
 
@@ -469,6 +466,8 @@ select {
 
 .home-duo>.section-block {
   flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
 }
 
 .section-heading {
@@ -484,7 +483,6 @@ select {
 
 .section-heading p {
   font-size: 30px;
-  font-weight: 400;
   font-weight: 300;
 }
 
@@ -513,189 +511,230 @@ select {
   text-transform: uppercase;
 }
 
-.house-card {
+/* =========================================================
+   CASAS — destaque principal e miniaturas
+   ========================================================= */
+   /* Colunas */
+.houses { min-width: 0; }
+.houses-showcase {
   display: flex;
-  gap: 20px;
-  align-items: stretch;
-  background: #fff;
-  padding: 12px;
-  border-radius: var(--cs-radius);
-  box-shadow: var(--cs-shadow);
-}
-
-.house-card-link {
-  display: contents;
-  color: inherit;
-  text-decoration: none;
-}
-
-.house-card img {
-  width: 35%;
-  object-fit: cover;
-  border-radius: var(--cs-radius);
-}
-
-.house-card h3 {
-  font-size: 26px;
-  margin: 4px 0 8px;
-}
-
-.house-card p {
-  margin: 0;
-  color: #555;
-}
-
-.band-cards {
-  display: flex;
-  gap: 18px;
-}
-
-.band-cards article {
-  flex: 1 1 0;
+  flex-direction: column;
+  flex: 1 1 auto;
   min-width: 0;
-}
-
-.band-cards img {
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  border-radius: 0px;
+  padding: 14px;
+  background: var(--cs-surface);
   box-shadow: var(--cs-shadow);
 }
-
-.band-cards h3 {
-  margin: 10px 0 5px;
-  font-size: 18px;
-}
-
-.band-cards h3 a {
-  font-size: inherit;
-  color: inherit;
-}
-
-.band-cards p {
-  margin: 0 0 5px;
-  color: #555;
-  font-size: 13px;
-}
-
-.band-cards a,
-.column-cards a,
-.news-card a {
-  color: var(--cs-blue);
-  font-weight: 700;
-  font-size: 12px;
-}
-
-.featured-bands .button-small {
-  margin: 0 0 18px;
-}
-
-.house-search {
+.houses-featured {
   display: flex;
+  align-items: stretch;
+  gap: 18px;
+  min-width: 0;
+  min-height: 150px;
+}
+.houses-featured-image {
+  display: block;
+  flex: 0 0 calc((100% - 32px) / 3);
+  min-width: 0;
+  overflow: hidden;
+  background: #edf4ff;
+}
+.houses-featured-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+.houses-featured-image:hover img { transform: scale(1.04); }
+.houses-featured-copy {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  padding: 3px 0;
+}
+.houses-featured-copy h3 {
+  margin: 0 0 10px;
+  color: #202936;
+  font-size: clamp(19px, 1.7vw, 26px);
+  line-height: 1.2;
+}
+.houses-featured-copy p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 0 12px;
+  color: #596577;
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+.houses-featured-cta {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #ccc;
-}
-
-.house-search label {
-  flex: 0 0 auto;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.house-search-field {
-  position: relative;
-  flex: 1;
-}
-
-.house-search-field input {
-  width: 100%;
-  height: 42px;
-  padding: 0 42px 0 14px;
-  border: 1px solid #bbb;
-  background: #fff;
-  font: inherit;
-  outline: none;
-}
-
-.house-search-field input:focus {
-  border-color: #287be0;
-  box-shadow: 0 0 0 2px rgb(40 123 224 / 12%);
-}
-
-/* Resultados */
-.house-search-results {
-  display: none;
-  position: absolute;
-  z-index: 20;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  box-shadow: 0 6px 18px rgb(0 0 0 / 12%);
-}
-
-.house-search-results.is-open {
-  display: block;
-}
-
-.house-search-result {
-  display: block;
-  width: 100%;
-  padding: 11px 14px;
-  border: 0;
-  border-bottom: 1px solid #eee;
-  background: #fff;
-  text-align: left;
-  font: inherit;
-  cursor: pointer;
-}
-
-.house-search-result:last-child {
-  border-bottom: 0;
-}
-
-.house-search-result:hover,
-.house-search-result:focus {
-  color: #287be0;
-  background: #f4f7fb;
-}
-
-.house-search-empty {
-  padding: 11px 14px;
-  color: #777;
-  font-size: 14px;
-}
-
-
-/* Botão */
-
-.house-search-button {
-  height: 42px;
-  padding: 0 18px;
-  border: 0;
-  background: #287be0;
+  justify-content: center;
+  align-self: flex-start;
+  gap: 10px;
+  margin-top: auto;
+  padding: 11px 17px;
+  border-radius: 5px;
+  background: var(--cs-blue);
   color: #fff;
+  font-size: 12px;
   font-weight: 700;
-  white-space: nowrap;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+.houses-featured-cta:hover { background: #174c9b; }
+.houses-featured-cta span { font-size: 17px; line-height: 1; }
+.houses-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e1e5ed;
+}
+.houses-thumbnail-item { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.houses-thumbnail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #202936;
+  text-align: left;
   cursor: pointer;
 }
+.houses-thumbnail-image {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #edf4ff;
+}
+.houses-thumbnail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+.houses-thumbnail:hover img { transform: scale(1.05); }
+.houses-thumbnail strong {
+  overflow: hidden;
+  width: 100%;
+  font-size: 12px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.houses-thumbnail-neighborhood {
+  display: block;
+  color: #697383;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.houses-thumbnail:hover strong,
+.houses-thumbnail.is-active strong { color: var(--cs-blue); }
+.houses-thumbnail.is-active .houses-thumbnail-image {
+  outline: 2px solid var(--cs-blue);
+  outline-offset: 2px;
+}
+.houses-thumbnail:focus-visible {
+  outline: 2px solid var(--cs-blue);
+  outline-offset: 4px;
+}
+.houses-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 14px;
+}
+.houses-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cs-blue);
+  font-size: 12px;
+  font-weight: 700;
+}
+.houses-footer a:hover { text-decoration: underline; }
+.houses-empty { padding: 20px; color: var(--cs-muted); font-size: 14px; }
 
-.house-search-button span {
-  margin-left: 8px;
+/* Bandas em destaque: cards compactos, sem herdar o hero do Swiper. */
+.band-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  flex: 1 1 auto;
+}
+.band-cards article {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  padding: 10px;
+  background: var(--cs-surface);
+  box-shadow: var(--cs-shadow);
+}
+.band-cards .featured-media {
+  flex: none;
+  min-width: 0;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+.band-cards .featured-media a { display: block; }
+.band-cards .featured-media img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+}
+.band-cards h3, .houses-thumbnail-item h3 { margin: 10px 0 6px; font-size: 15px; line-height: 1.3; }
+.band-cards p { margin: 0 0 10px; font-size: 12px; line-height: 1.45; color: var(--cs-muted); }
+.band-cards article > a:last-child {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 7px 0 0;
+  color: var(--cs-blue);
+  font-size: 12px;
+  font-weight: 700;
+}
+@media (max-width: 650px) {
+  .band-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 400px) {
+  .band-cards { grid-template-columns: minmax(0, 1fr); }
 }
 
-.house-search-button:hover:not(:disabled) {
-  filter: brightness(.92);
+@media (max-width: 1100px) {
+  .houses-featured { gap: 14px; }
+  .houses-featured-image { flex-basis: 40%; }
+  .houses-featured-copy h3 { font-size: 19px; }
+  .houses-featured-copy p { font-size: 12px; }
+  .houses-thumbnails { gap: 8px; }
 }
-
-.house-search-button:disabled {
-  opacity: .45;
-  cursor: default;
+@media (max-width: 650px) {
+  .houses-showcase { padding: 12px; }
+  .houses-featured { gap: 12px; min-height: 145px; }
+  .houses-featured-image { flex-basis: 38%; }
+  .houses-featured-copy h3 { margin-bottom: 6px; font-size: 17px; }
+  .houses-featured-copy p { font-size: 12px; }
+  .houses-featured-cta { padding: 9px 11px; font-size: 10px; }
+  .houses-thumbnails { gap: 8px; margin-top: 12px; padding-top: 12px; }
+  .houses-thumbnail-image { aspect-ratio: 4 / 3; }
+  .houses-thumbnail strong { font-size: 11px; }
+}
+@media (max-width: 400px) {
+  .houses-featured { flex-direction: column; }
+  .houses-featured-image { flex: none; width: 100%; aspect-ratio: 16 / 8; }
+  .houses-featured-copy { padding: 4px 0; }
+  .houses-featured-cta { margin-top: 8px; }
 }
 
 .news-col {
@@ -781,20 +820,6 @@ select {
 
 .agenda-date small {
   font-weight: 700;
-}
-
-.agenda-main {
-  min-width: 0;
-}
-
-.agenda-main strong,
-.agenda-main small {
-  display: block;
-}
-
-.agenda-main small {
-  margin-top: 2px;
-  color: var(--cs-muted);
 }
 
 .empty-state {
@@ -1225,9 +1250,6 @@ select {
     flex-basis: auto;
   }
 
-  .sidebar-home {
-    width: 100%;
-  }
 }
 
 @media (max-width: 780px) {
@@ -1293,14 +1315,12 @@ select {
     padding: 28px 24px;
   }
 
-  .band-cards,
   .column-cards,
   .promo-grid,
   .feature-boxes {
     flex-wrap: wrap;
   }
 
-  .band-cards article,
   .column-cards article,
   .promo-grid article,
   .promo-grid>div,
@@ -1353,14 +1373,12 @@ select {
     font-size: 36px;
   }
 
-  .band-cards,
   .column-cards,
   .promo-grid,
   .feature-boxes {
     flex-direction: column;
   }
 
-  .band-cards article,
   .column-cards article,
   .promo-grid article,
   .promo-grid>div,
@@ -1536,1042 +1554,124 @@ select {
 }
 
 /* =========================================================
-   CSAMBA — AGENDA HOME
+   CSAMBA — AGENDA HOME (versão consolidada)
    ========================================================= */
-
-.agenda-home {
-  margin-top: 40px;
-  min-width: 0;
-}
-
-
-/* =========================================================
-   CABEÇALHO
-   ========================================================= */
-
-.agenda-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  margin-bottom: 18px;
-}
-
-.agenda-heading>a {
-  flex: 0 0 auto;
-
-  color: #287be0;
-
-  font-size: 13px;
-  font-weight: 700;
-
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.agenda-heading>a:hover {
-  text-decoration: underline;
-}
-
-
-/* =========================================================
-   ESTRUTURA PRINCIPAL
-   ========================================================= */
-
-.agenda-shell {
-  display: flex;
-  align-items: stretch;
-
-  gap: 16px;
-
-  width: 100%;
-  min-width: 0;
-}
-
-
-/* Bloco esquerdo: dias + eventos + bandas */
-
-.agenda-main {
-  display: flex;
-  flex-direction: column;
-
-  flex: 1 1 0;
-
-  width: 0;
-  min-width: 0;
-
-  background: transparent;
-}
-
-
-/* Bloco direito: mapa */
-
-.agenda-map-column {
-  position: relative;
-
-  flex: 0 0 30%;
-
-  min-width: 0;
-
-  background: #fff;
-
-  box-shadow: 0 4px 14px rgb(0 0 0 / 8%);
-}
-
-
-/* =========================================================
-   CARROSSEL DOS DIAS
-   ========================================================= */
-
-.agenda-days {
-  display: flex;
-  align-items: center;
-
-  flex: 0 0 auto;
-
-  gap: 10px;
-
-  min-width: 0;
-
-  margin-bottom: 16px;
-  padding: 14px 16px;
-
-  background: #f8faff;
-
-  box-shadow: 0 4px 14px rgb(0 0 0 / 5%);
-}
-
-.agenda-days-swiper {
-  flex: 1 1 0;
-
-  width: 0;
-  min-width: 0;
-
-  overflow: hidden;
-}
-
-.agenda-days .swiper-slide {
-  height: auto;
-}
-
-
-/* =========================================================
-   ABAS DOS DIAS
-   ========================================================= */
-
-.agenda-tab {
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
-  min-height: 64px;
-
-  padding: 9px 6px;
-
-  border: 1px solid #dce2ed;
-  border-radius: 5px;
-
-  background: #fff;
-  color: #222;
-
-  cursor: pointer;
-
-  transition:
-    background .2s ease,
-    color .2s ease,
-    border-color .2s ease;
-}
-
-.agenda-tab strong {
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.agenda-tab span {
-  margin-top: 3px;
-
-  font-size: 11px;
-  line-height: 1.2;
-}
-
-.agenda-tab:hover {
-  background: #edf4ff;
-}
-
-.agenda-tab.is-active {
-  border-color: #287be0;
-
-  background: #287be0;
-  color: #fff;
-}
-
-.agenda-tab:focus-visible {
-  outline: 2px solid #174c9b;
-  outline-offset: 2px;
-}
-
-
-/* =========================================================
-   BOTÕES DE NAVEGAÇÃO DOS SWIPERS
-   ========================================================= */
-
-.agenda-days-prev,
-.agenda-days-next,
-.agenda-bands-prev,
-.agenda-bands-next {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex: 0 0 34px;
-
-  width: 34px;
-  height: 34px;
-
-  padding: 0;
-
-  border: 1px solid #dce2ed;
-  border-radius: 50%;
-
-  background: #fff;
-  color: #174c9b;
-
-  cursor: pointer;
-
-  font-size: 25px;
-  line-height: 1;
-
-  transition:
-    background .2s ease,
-    opacity .2s ease;
-}
-
-.agenda-days-prev:hover,
-.agenda-days-next:hover,
-.agenda-bands-prev:hover,
-.agenda-bands-next:hover {
-  background: #edf4ff;
-}
-
-.agenda-days .swiper-button-disabled,
-.agenda-bands .swiper-button-disabled {
-  opacity: .35;
-  cursor: default;
-}
-
-
-/* =========================================================
-   CORPO: EVENTOS + BANDAS
-   ========================================================= */
-
-.agenda-body {
-  display: grid;
-
-  grid-template-columns:
-    minmax(0, 1.4fr) minmax(0, 1fr);
-
-  flex: 1 1 auto;
-
-  gap: 8px;
-
-  width: 100%;
-  min-width: 0;
-
-  align-items: stretch;
-}
-
-
-/* =========================================================
-   COLUNA DE EVENTOS
-   ========================================================= */
-
-.agenda-events {
-  display: flex;
-  flex-direction: column;
-
-  min-width: 0;
-
-  padding: 20px 16px 16px;
-
-  background: #fff;
-
-  box-shadow: 0 4px 14px rgb(0 0 0 / 8%);
-}
-
-
-/* Cabeçalho dos eventos */
-
-.agenda-events-heading {
-  margin-bottom: 14px;
-}
-
-.agenda-events-heading h3 {
-  margin: 0;
-
-  color: #202936;
-
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.agenda-events-heading p {
-  margin: 4px 0 0;
-
-  color: #697383;
-
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-
-/* Lista */
-
-.agenda-events-list {
-  flex: 1 1 auto;
-
-  min-height: 0;
-}
-
-
-/* Item de evento */
-
-.agenda-event {
-  display: grid;
-
-  grid-template-columns:
-    52px minmax(0, 1fr) 12px;
-
-  align-items: center;
-
-  gap: 10px;
-
-  min-height: 66px;
-
-  padding: 9px 4px;
-
-  border-bottom: 1px solid #e1e5ed;
-
-  color: #222;
-
-  text-decoration: none;
-
-  transition: background .15s ease;
-}
-
-.agenda-event:hover {
-  background: #f7f9fc;
-}
-
-
-/* Horário */
-
-.agenda-event-time {
-  align-self: start;
-
-  color: #287be0;
-
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
-
-/* Informações */
-
-.agenda-event-info {
-  min-width: 0;
-}
-
-.agenda-event-title {
-  display: block;
-
-  overflow: hidden;
-
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
-
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.agenda-event-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-
-  margin-top: 4px;
-
-  color: #697383;
-
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-.agenda-event-meta>*+*::before {
-  content: "·";
-
-  margin: 0 6px;
-
-  color: #a0a8b4;
-}
-
-
-/* Seta */
-
-.agenda-event-arrow {
-  color: #697383;
-
-  font-size: 22px;
-  line-height: 1;
-  text-align: right;
-}
-
-
-/* =========================================================
-   BOTÃO VER TODOS
-   ========================================================= */
-
-.agenda-see-all {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex: 0 0 auto;
-
-  min-height: 43px;
-
-  margin-top: 14px;
-  padding: 10px;
-
-  background: #edf4ff;
-  color: #174c9b;
-
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.3;
-
-  text-align: center;
-  text-decoration: none;
-
-  transition: background .2s ease;
-}
-
-.agenda-see-all:hover {
-  background: #dceaff;
-}
-
-
-/* =========================================================
-   COLUNA DAS BANDAS
-   ========================================================= */
-
-.agenda-bands {
-  display: flex;
-  flex-direction: column;
-
-  min-width: 0;
-
-  padding: 20px 16px 16px;
-
-  border: 0;
-
-  background: #fff;
-
-  box-shadow: 0 4px 14px rgb(0 0 0 / 8%);
-}
-
-
-/* Cabeçalho */
-
-.agenda-bands-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 10px;
-
-  margin-bottom: 14px;
-}
-
-.agenda-bands-heading h3 {
-  margin: 0;
-
-  color: #202936;
-
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.agenda-bands-heading p {
-  margin: 4px 0 0;
-
-  color: #697383;
-
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.agenda-bands-controls {
-  display: flex;
-
-  flex: 0 0 auto;
-
-  gap: 6px;
-}
-
-
-/* =========================================================
-   SWIPER DAS BANDAS
-   ========================================================= */
-
-.agenda-bands-swiper {
-  position: relative;
-
-  width: 100%;
-  min-width: 0;
-
-  overflow: hidden;
-}
-
-.agenda-bands-swiper .swiper-wrapper {
-  align-items: stretch;
-}
-
-.agenda-bands-swiper .swiper-slide {
-  height: auto;
-}
-
-
-/* =========================================================
-   CARD DA BANDA
-   ========================================================= */
-
-.agenda-band-card {
-  display: flex;
-  flex-direction: column;
-
-  height: 100%;
-
-  overflow: hidden;
-
-  border: 1px solid #e5e9f0;
-  border-radius: 5px;
-
-  background: #fff;
-
-  box-shadow: 0 2px 7px rgb(0 0 0 / 5%);
-}
-
-
-/* Imagem */
-
-.agenda-band-image {
-  display: block;
-
-  width: 100%;
-
-  aspect-ratio: 16 / 9;
-
-  overflow: hidden;
-}
-
-.agenda-band-image img {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-}
-
-.agenda-band-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
-  height: 100%;
-
-  padding: 12px;
-
-  background: #edf4ff;
-  color: #287be0;
-
-  font-size: 16px;
-  font-weight: 800;
-
-  text-align: center;
-}
-
-
-/* Informações da banda */
-
-.agenda-band-copy {
-  display: flex;
-  flex-direction: column;
-
-  flex: 1 1 auto;
-
-  padding: 14px;
-}
-
-.agenda-band-copy h4 {
-  margin: 0 0 10px;
-
-  color: #202936;
-
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.agenda-band-copy p {
-  margin: 0 0 7px;
-
-  color: #697383;
-
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.agenda-band-copy>a {
-  margin-top: auto;
-  padding-top: 12px;
-
-  color: #287be0;
-
-  font-size: 12px;
-  font-weight: 700;
-
-  text-decoration: none;
-}
-
-.agenda-band-copy>a:hover {
-  text-decoration: underline;
-}
-
-
-/* =========================================================
-   PAGINAÇÃO DO SWIPER
-   ========================================================= */
-
-.agenda-bands-pagination {
-  position: relative !important;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 8px;
-
-  width: 100%;
-
-  margin-top: 12px;
-}
-
-.agenda-bands-pagination .swiper-pagination-bullet {
-  width: 8px;
-  height: 8px;
-
-  margin: 0 !important;
-
-  background: #cbd3df;
-
-  opacity: 1;
-}
-
-.agenda-bands-pagination .swiper-pagination-bullet-active {
-  background: #287be0;
-}
-
-
-/* Estado vazio das bandas */
-
-.agenda-bands-empty {
-  margin: 20px 0;
-
-  color: #777;
-
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.agenda-bands-empty[hidden] {
-  display: none;
-}
-
-
-/* =========================================================
-   MAPA
-   ========================================================= */
-
-.agenda-map-wrapper {
-  position: absolute;
-
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  min-height: 550px;
-}
-
-#agenda-map {
-  width: 100%;
-  height: 100%;
-
-  min-height: 550px;
-}
-
-
-/* =========================================================
-   BOTÃO SOBRE O MAPA
-   ========================================================= */
-
-.agenda-open-map {
-  position: absolute;
-
-  z-index: 500;
-
-  right: 14px;
-  bottom: 14px;
-
-  padding: 11px 15px;
-
-  border: 1px solid #dce2ed;
-  border-radius: 4px;
-
-  background: rgb(255 255 255 / 96%);
-  color: #174c9b;
-
-  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
-
-  font-size: 12px;
-  font-weight: 700;
-
-  text-decoration: none;
-
-  transition: background .2s ease;
-}
-
-.agenda-open-map:hover {
-  background: #fff;
-}
-
-
-/* =========================================================
-   POPUP DO LEAFLET
-   ========================================================= */
-
-.agenda-map-popup {
-  min-width: 190px;
-}
-
-.agenda-map-popup h4 {
-  margin: 0 0 10px;
-
-  color: #174c9b;
-
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.agenda-popup-event {
-  padding: 8px 0;
-
-  border-top: 1px solid #eee;
-}
-
-.agenda-popup-event strong,
-.agenda-popup-event span {
-  display: block;
-
-  margin-bottom: 4px;
-
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.agenda-popup-event a {
-  display: inline-block;
-
-  margin-top: 4px;
-
-  color: #287be0;
-
-  font-size: 11px;
-  font-weight: 700;
-
-  text-decoration: none;
-}
-
-.agenda-popup-event a:hover {
-  text-decoration: underline;
-}
-
-
-/* =========================================================
-   ESTADOS: CARREGANDO / SEM EVENTOS
-   ========================================================= */
-
-.agenda-loading,
-.agenda-empty {
-  margin: 0;
-  padding: 30px 0;
-
-  color: #777;
-
-  font-size: 13px;
-  line-height: 1.5;
-
-  text-align: center;
-}
-
-
-/* =========================================================
-   RESPONSIVO — DESKTOP MENOR
-   ========================================================= */
-
+.agenda-home { min-width: 0; }
+.agenda-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+.agenda-heading > a { flex: 0 0 auto; color: #287be0; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.agenda-heading > a:hover { text-decoration: underline; }
+
+/* Estrutura: conteúdo à esquerda, mapa à direita */
+.agenda-shell { display: flex; align-items: stretch; gap: 16px; width: 100%; min-width: 0; }
+.agenda-main { display: flex; flex-direction: column; flex: 1 1 0; min-width: 0; background: transparent; }
+.agenda-map-column { position: relative; flex: 0 0 30%; min-width: 0; background: #fff; box-shadow: 0 4px 14px rgb(0 0 0 / 8%); }
+.agenda-body { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); flex: 1 1 auto; gap: var(--cs-gap-lg); width: 100%; min-width: 0; align-items: stretch; }
+
+/* Sete dias, sem caixas e sem navegação */
+.agenda-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; flex: 0 0 auto; min-width: 0; margin-bottom: 16px; padding: 0 16px; background: #fff; box-shadow: 0 4px 14px rgb(0 0 0 / 5%); }
+.agenda-days .agenda-tab { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-width: 0; min-height: 76px; margin: 0; padding: 12px 4px 15px; border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: transparent; color: #202936; font-family: inherit; text-align: center; cursor: pointer; transition: color .2s ease, border-color .2s ease; }
+.agenda-days .agenda-tab strong { display: block; font-size: 14px; font-weight: 700; line-height: 1.2; }
+.agenda-days .agenda-tab span { display: block; margin-top: 4px; font-size: 12px; line-height: 1.2; }
+.agenda-days .agenda-tab:hover { background: transparent; color: #287be0; }
+.agenda-days .agenda-tab.is-active { border-bottom-color: #287be0; background: transparent; color: #287be0; }
+.agenda-days .agenda-tab:focus-visible { outline: 2px solid #287be0; outline-offset: -2px; }
+.agenda-days-prev, .agenda-days-next { display: none; }
+
+/* Coluna de eventos */
+.agenda-events { display: flex; flex-direction: column; min-width: 0; padding: 20px 16px 16px; background: #fff; box-shadow: 0 4px 14px rgb(0 0 0 / 8%); }
+.agenda-events-heading { margin-bottom: 14px; }
+.agenda-events-heading h3, .agenda-featured-heading h3 { margin: 0; color: #202936; font-size: 17px; font-weight: 800; line-height: 1.3; }
+.agenda-events-heading p, .agenda-featured-heading p { margin: 4px 0 0; color: #697383; font-size: 12px; line-height: 1.4; }
+.agenda-events-list { flex: 1 1 auto; min-height: 0; }
+.agenda-events .agenda-event { position: relative; display: grid; grid-template-columns: 60px minmax(0, 1fr) 16px; align-items: center; gap: 12px; width: 100%; min-height: 64px; box-sizing: border-box; margin: 0; padding: 10px 4px; border: 0; border-bottom: 1px solid #e1e5ed; border-radius: 0; background: transparent; color: #222; font-family: inherit; text-align: left; text-decoration: none; cursor: pointer; transition: padding-left .25s ease, background .25s ease; }
+.agenda-events .agenda-event:hover { background: #f7f9fc; }
+.agenda-events .agenda-event.is-featured-active { padding-left: 16px; border-bottom-color: #d5e3fb; border-radius: 4px; background: #edf4ff; }
+.agenda-events .agenda-event.is-featured-active::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 4px; border-radius: 4px 0 0 4px; background: #287be0; }
+.agenda-events .agenda-event.is-featured-active .agenda-event-title { color: #174c9b; }
+.agenda-events .agenda-event:focus-visible { outline: 2px solid #287be0; outline-offset: -2px; }
+.agenda-event-time { align-self: start; color: #287be0; font-size: 13px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+.agenda-event-info { min-width: 0; }
+.agenda-event-title { display: block; overflow: hidden; font-size: 13px; font-weight: 700; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.agenda-event-meta { display: flex; flex-wrap: wrap; align-items: center; margin-top: 4px; color: #697383; font-size: 11px; line-height: 1.4; }
+.agenda-event-meta > * + *::before { content: '·'; margin: 0 6px; color: #a0a8b4; }
+.agenda-event-arrow { color: #697383; font-size: 22px; line-height: 1; text-align: right; }
+.agenda-see-all { display: flex; align-items: center; justify-content: center; flex: 0 0 auto; min-height: 43px; margin-top: 14px; padding: 10px; background: #edf4ff; color: #174c9b; font-size: 12px; font-weight: 700; line-height: 1.3; text-align: center; transition: background .2s ease; }
+.agenda-see-all:hover { background: #dceaff; }
+
+/* Evento em destaque: um evento por slide */
+.agenda-featured { display: flex; flex-direction: column; min-width: 0; padding: 20px 16px 16px; background: #fff; border-radius: 6px; box-shadow: 0 4px 14px rgb(0 0 0 / 5%); }
+.agenda-featured-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+.agenda-featured-controls { display: flex; flex: 0 0 auto; gap: 8px; }
+.agenda-featured-prev, .agenda-featured-next { display: flex; align-items: center; justify-content: center; flex: 0 0 34px; width: 34px; height: 34px; padding: 0; border: 1px solid #dce2ed; border-radius: 50%; background: #fff; color: #174c9b; cursor: pointer; font-size: 25px; line-height: 1; }
+.agenda-featured-prev:hover, .agenda-featured-next:hover { background: #edf4ff; }
+.agenda-featured .swiper-button-disabled { opacity: .35; cursor: default; }
+.agenda-featured-swiper { width: 100%; min-width: 0; overflow: hidden; }
+.agenda-featured-swiper .swiper-slide { height: auto; }
+.agenda-featured-card { display: flex; flex-direction: column; height: 100%; overflow: hidden; border: 1px solid #e5e9f0; border-radius: 6px; background: #fff; box-shadow: 0 2px 7px rgb(0 0 0 / 5%); }
+.agenda-featured-image { display: block; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
+.agenda-featured-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.agenda-featured-placeholder { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: #edf4ff; color: #287be0; font-size: 20px; font-weight: 800; }
+.agenda-featured-copy { display: flex; flex-direction: column; flex: 1 1 auto; padding: 16px; }
+.agenda-featured-copy h4 { margin: 0 0 12px; color: #202936; font-size: 18px; font-weight: 800; line-height: 1.3; }
+.agenda-featured-meta { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; color: #697383; font-size: 12px; }
+.agenda-featured-description { margin: 0 0 16px; color: #697383; font-size: 13px; line-height: 1.6; }
+.agenda-featured-link { align-self: flex-start; margin-top: auto; padding: 10px 14px; border-radius: 4px; background: #287be0; color: #fff; font-size: 12px; font-weight: 700; }
+.agenda-featured-link:hover { background: #174c9b; }
+.agenda-featured-pagination { position: relative !important; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; }
+.agenda-featured-pagination .swiper-pagination-bullet { width: 8px; height: 8px; margin: 0 !important; background: #cbd3df; opacity: 1; }
+.agenda-featured-pagination .swiper-pagination-bullet-active { background: #287be0; }
+.agenda-featured-empty, .agenda-loading, .agenda-empty { margin: 0; padding: 30px 0; color: #777; font-size: 13px; line-height: 1.5; text-align: center; }
+.agenda-featured-empty[hidden] { display: none; }
+
+/* Mapa e popups Leaflet */
+.agenda-map-wrapper { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 550px; }
+#agenda-map { width: 100%; height: 100%; min-height: 550px; }
+.agenda-open-map { position: absolute; z-index: 500; right: 14px; bottom: 14px; padding: 11px 15px; border: 1px solid #dce2ed; border-radius: 4px; background: rgb(255 255 255 / 96%); color: #174c9b; box-shadow: 0 2px 8px rgb(0 0 0 / 12%); font-size: 12px; font-weight: 700; transition: background .2s ease; }
+.agenda-open-map:hover { background: #fff; }
+.agenda-map-popup { min-width: 190px; }
+.agenda-map-popup h4 { margin: 0 0 10px; color: #174c9b; font-size: 15px; font-weight: 700; }
+.agenda-popup-event { padding: 8px 0; border-top: 1px solid #eee; }
+.agenda-popup-event strong, .agenda-popup-event span { display: block; margin-bottom: 4px; font-size: 12px; line-height: 1.4; }
+.agenda-popup-event a { display: inline-block; margin-top: 4px; color: #287be0; font-size: 11px; font-weight: 700; }
+.agenda-popup-event a:hover { text-decoration: underline; }
+
+/* Responsividade */
 @media (max-width: 1200px) {
-
-  .agenda-map-column {
-    flex-basis: 28%;
-  }
-
-  .agenda-body {
-    grid-template-columns:
-      minmax(0, 1.2fr) minmax(0, 1fr);
-  }
-
-  .agenda-bands {
-    padding: 16px 12px;
-  }
-
-  .agenda-events {
-    padding: 16px 12px;
-  }
-
-  .agenda-bands-heading h3,
-  .agenda-events-heading h3 {
-    font-size: 15px;
-  }
-
-  .agenda-band-copy {
-    padding: 10px;
-  }
-
-  .agenda-band-copy h4 {
-    font-size: 14px;
-  }
+  .agenda-map-column { flex-basis: 28%; }
+  .agenda-body { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .agenda-events, .agenda-featured { padding: 16px 12px; }
+  .agenda-events-heading h3, .agenda-featured-heading h3 { font-size: 15px; }
+  .agenda-featured-copy { padding: 12px; }
+  .agenda-featured-copy h4 { font-size: 15px; }
 }
-
-
-/* =========================================================
-   RESPONSIVO — TABLET
-   ========================================================= */
-
 @media (max-width: 1000px) {
-
-  .agenda-shell {
-    flex-direction: column;
-  }
-
-  .agenda-main {
-    flex: none;
-
-    width: 100%;
-  }
-
-  .agenda-body {
-    grid-template-columns:
-      minmax(0, 1.4fr) minmax(0, 1fr);
-  }
-
-  .agenda-map-column {
-    flex: none;
-
-    width: 100%;
-    height: 320px;
-  }
-
-  .agenda-map-wrapper,
-  #agenda-map {
-    height: 320px;
-    min-height: 320px;
-  }
+  .agenda-shell { flex-direction: column; }
+  .agenda-main { flex: none; width: 100%; }
+  .agenda-body { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .agenda-map-column { flex: none; width: 100%; height: 320px; }
+  .agenda-map-wrapper, #agenda-map { height: 320px; min-height: 320px; }
 }
-
-
-/* =========================================================
-   RESPONSIVO — MOBILE
-   ========================================================= */
-
 @media (max-width: 650px) {
-
-  .agenda-home {
-    margin-top: 28px;
-  }
-
-  /* Cabeçalho */
-
-  .agenda-heading {
-    align-items: flex-start;
-    flex-direction: column;
-
-    gap: 10px;
-  }
-
-  .agenda-heading>a {
-    font-size: 12px;
-  }
-
-
-  /* Dias */
-
-  .agenda-days {
-    gap: 6px;
-
-    padding: 10px;
-  }
-
-  .agenda-days-prev,
-  .agenda-days-next {
-    flex-basis: 28px;
-
-    width: 28px;
-    height: 28px;
-
-    font-size: 21px;
-  }
-
-  .agenda-tab {
-    min-height: 55px;
-
-    padding: 8px 5px;
-  }
-
-  .agenda-tab strong {
-    font-size: 12px;
-  }
-
-  .agenda-tab span {
-    font-size: 11px;
-  }
-
-
-  /* Eventos + bandas empilhados */
-
-  .agenda-body {
-    grid-template-columns: minmax(0, 1fr);
-
-    gap: 16px;
-  }
-
-
-  /* Eventos */
-
-  .agenda-events {
-    padding: 16px 12px;
-  }
-
-  .agenda-event {
-    grid-template-columns:
-      42px minmax(0, 1fr) 12px;
-
-    gap: 7px;
-
-    min-height: 58px;
-  }
-
-  .agenda-event-time {
-    font-size: 12px;
-  }
-
-  .agenda-event-title {
-    font-size: 13px;
-  }
-
-  .agenda-event-meta {
-    font-size: 11px;
-  }
-
-  .agenda-event-arrow {
-    font-size: 19px;
-  }
-
-  .agenda-see-all {
-    min-height: 42px;
-
-    font-size: 11px;
-  }
-
-
-  /* Bandas */
-
-  .agenda-bands {
-    padding: 16px 12px;
-  }
-
-  .agenda-bands-heading h3 {
-    font-size: 15px;
-  }
-
-  .agenda-bands-heading p {
-    font-size: 11px;
-  }
-
-  .agenda-bands-prev,
-  .agenda-bands-next {
-    flex-basis: 30px;
-
-    width: 30px;
-    height: 30px;
-
-    font-size: 21px;
-  }
-
-  .agenda-band-image {
-    aspect-ratio: 16 / 9;
-  }
-
-  .agenda-band-copy {
-    padding: 12px;
-  }
-
-  .agenda-band-copy h4 {
-    font-size: 14px;
-  }
-
-
-  /* Mapa */
-
-  .agenda-map-column {
-    height: 300px;
-  }
-
-  .agenda-map-wrapper,
-  #agenda-map {
-    height: 300px;
-    min-height: 300px;
-  }
-
-  .agenda-open-map {
-    right: 10px;
-    bottom: 10px;
-
-    padding: 9px 12px;
-
-    font-size: 11px;
-  }
+  .agenda-home { margin-top: 28px; }
+  .agenda-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .agenda-heading > a { font-size: 12px; }
+  .agenda-days { grid-template-columns: repeat(7, minmax(65px, 1fr)); overflow-x: auto; padding: 0 8px; }
+  .agenda-days .agenda-tab { min-height: 65px; padding: 10px 2px; }
+  .agenda-days .agenda-tab strong { font-size: 12px; }
+  .agenda-days .agenda-tab span { font-size: 11px; }
+  .agenda-body { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .agenda-events, .agenda-featured { padding: 16px 12px; }
+  .agenda-events .agenda-event { grid-template-columns: 42px minmax(0, 1fr) 12px; gap: 7px; min-height: 58px; }
+  .agenda-event-time { font-size: 12px; }
+  .agenda-event-title { font-size: 13px; }
+  .agenda-event-meta { font-size: 11px; }
+  .agenda-event-arrow { font-size: 19px; }
+  .agenda-see-all { min-height: 42px; font-size: 11px; }
+  .agenda-featured-copy h4 { font-size: 16px; }
+  .agenda-map-column { height: 300px; }
+  .agenda-map-wrapper, #agenda-map { height: 300px; min-height: 300px; }
+  .agenda-open-map { right: 10px; bottom: 10px; padding: 9px 12px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agenda-featured-card, .agenda-events .agenda-event, .agenda-days .agenda-tab { transition: none; }
 }

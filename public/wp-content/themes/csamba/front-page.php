@@ -4,7 +4,13 @@ $featured = csamba_featured_items(7);
 $houses = get_posts(['post_type'=>'casa','posts_per_page'=>4]);
 $news = get_posts(['post_type'=>'post','posts_per_page'=>5]);
 $bands = get_posts(['post_type'=>'banda','posts_per_page'=>3]);
-$columns = get_posts(['post_type'=>'coluna','posts_per_page'=>3]);
+$columns = get_posts([
+    'post_type'=>'coluna',
+    'post_status'=>'publish',
+    'posts_per_page'=>3,
+    'orderby'=>'date',
+    'order'=>'DESC'
+]);
 $event_query = csamba_upcoming_events(6);
 
 $house_search_query = new WP_Query([
@@ -64,7 +70,7 @@ wp_reset_postdata();
       <div class="featured-pagination"></div>
     </aside>
   </section>
-
+  <!-- /* SEGUNDA DOBRA */ -->
   <section class="home-duo">
     <?php
       /*
@@ -115,16 +121,19 @@ wp_reset_postdata();
 
       $main_house = $house_cards[0] ?? null;
     ?>
-
     <div class="section-block houses">
-      <header class="section-heading">
-        <p>CASAS</p>
-        <h2>DE SAMBA E PAGODE</h2>
-      </header>
+      <div class="section-heading-row">
+        <header class="section-heading">
+          <p>CASAS</p>
+          <h2>DE SAMBA E PAGODE</h2>
+        </header>
+        <a class="button" href="<?php echo esc_url(home_url('/casas/')); ?>">Ver todas
+        </a>
+      </div>
       <div class="houses-showcase">
         <?php if ($main_house): ?>
           <!-- CASA PRINCIPAL -->
-          <article class="houses-featured">
+          <article class="houses-featured hover-image">
             <a class="houses-featured-image" id="houses-featured-image" href="<?php echo esc_url($main_house['url']); ?>">
               <img id="houses-featured-img" src="<?php echo esc_url($main_house['image']); ?>" alt="<?php echo esc_attr($main_house['title']); ?>">
             </a>
@@ -137,7 +146,7 @@ wp_reset_postdata();
               <p id="houses-featured-description">
                 <?php echo esc_html($main_house['description']); ?>
               </p>
-              <a id="houses-featured-link" class="houses-featured-cta" href="<?php echo esc_url($main_house['url']); ?>">
+              <a id="houses-featured-link" class="link-default" href="<?php echo esc_url($main_house['url']); ?>">
                 CONHECER CASA
                 <span aria-hidden="true">→</span>
               </a>
@@ -147,10 +156,10 @@ wp_reset_postdata();
           <?php if (count($house_cards) > 1): ?>
             <div class="houses-thumbnails">
               <?php foreach (array_slice($house_cards, 1) as $house): ?>
-                <div class="houses-thumbnail-item">
+                <div class="houses-thumbnail-item hover-image">
                 <button type="button" class="houses-thumbnail" data-house-id="<?php echo esc_attr($house['id']); ?>" aria-label="Destacar <?php echo esc_attr($house['title']); ?>" aria-pressed="false">
                   <span class="houses-thumbnail-image">
-                    <a class="houses-thumbnail-link" href="<?php echo esc_url($house['url']); ?>" aria-label="Conhecer <?php echo esc_attr($house['title']); ?>">
+                    <a class="houses-thumbnail-link " href="<?php echo esc_url($house['url']); ?>" aria-label="Conhecer <?php echo esc_attr($house['title']); ?>">
                       <img src="<?php echo esc_url($house['image']); ?>" alt="" loading="lazy">
                     </a>
                   </span>
@@ -172,13 +181,6 @@ wp_reset_postdata();
             Nenhuma casa cadastrada.
           </p>
         <?php endif; ?>
-        <!-- RODAPÉ -->
-        <div class="houses-footer">
-          <a href="<?php echo esc_url(home_url('/casas/')); ?>">
-            VER TODAS AS CASAS
-            <span aria-hidden="true">→</span>
-          </a>
-        </div>
       </div>
     </div>
     <?php
@@ -204,51 +206,56 @@ wp_reset_postdata();
           <p>BANDAS</p>
           <h2>EM DESTAQUE</h2>
         </header>
-        <a class="button button-small" href="<?php echo esc_url(get_post_type_archive_link('banda')); ?>">Ver todas</a>
+        <a class="button" href="<?php echo esc_url(get_post_type_archive_link('banda')); ?>">Ver todas
+        </a>
       </div>
       <div class="band-cards">
         <?php foreach($bands as $b): ?>
-          <article>
+           <?php $bio = get_field('banda_bio', $b->ID); ?>
+          <article class="hover-image">
             <div class="featured-media">
               <a href="<?php echo esc_url(get_permalink($b)); ?>">
                 <img loading="lazy" src="<?php echo esc_url(csamba_image_url($b->ID,'csamba-card',get_the_title($b))); ?>" alt="">
               </a>
             </div>
             <h3><a href="<?php echo esc_url(get_permalink($b)); ?>"><?php echo esc_html(get_the_title($b)); ?></a></h3>
-            <p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($b->post_content),20)); ?></p>
+            <?php if ($bio): ?>
+              <p>
+                <?php echo esc_html( wp_trim_words( wp_strip_all_tags($bio), 25)); ?>
+              </p>
+            <?php endif; ?>
             <a href="<?php echo esc_url(get_permalink($b)); ?>">ver banda</a>
           </article>
         <?php endforeach; ?>
       </div>
     </div>
   </section>
- 
+  <!-- /* AGENDA */ -->
   <?php
-  $today = current_datetime();
+    $today = current_datetime();
 
-  $weekdays = [
-    0 => 'DOM',
-    1 => 'SEG',
-    2 => 'TER',
-    3 => 'QUA',
-    4 => 'QUI',
-    5 => 'SEX',
-    6 => 'SÁB',
-  ];
-
-  $days = [];
-
-  for ($i = 0; $i < 7; $i++) {
-    $day = $today->modify("+{$i} days");
-
-    $days[] = [
-      'date'  => $day->format('Y-m-d'),
-      'day'   => $weekdays[(int) $day->format('w')],
-      'label' => $day->format('d/m'),
+    $weekdays = [
+      0 => 'DOM',
+      1 => 'SEG',
+      2 => 'TER',
+      3 => 'QUA',
+      4 => 'QUI',
+      5 => 'SEX',
+      6 => 'SÁB',
     ];
-  }
-  ?>
 
+    $days = [];
+
+    for ($i = 0; $i < 7; $i++) {
+      $day = $today->modify("+{$i} days");
+
+      $days[] = [
+        'date'  => $day->format('Y-m-d'),
+        'day'   => $weekdays[(int) $day->format('w')],
+        'label' => $day->format('d/m'),
+      ];
+    }
+  ?>
   <section class="section-block agenda-home">
     <header class="agenda-heading">
       <div class="section-heading">
@@ -331,50 +338,161 @@ wp_reset_postdata();
       </aside>
     </div>
   </section>
+  <!-- /* QUARTA DOBRA */ -->
   <section class="content-columns">
     <div class="news-col">
-      <header class="section-heading ruled"><p>NOVIDADES</p><h2>CSAMBA</h2></header>
-      <?php if($news): foreach($news as $n): ?>
-        <article class="news-card">
-          <?php if(has_post_thumbnail($n->ID)): ?><img loading="lazy" src="<?php echo esc_url(csamba_image_url($n->ID,'csamba-card',get_the_title($n))); ?>" alt=""><?php endif; ?>
-          <div class="news-copy"><time><?php echo esc_html(get_the_date('d/m/Y',$n->ID)); ?></time><h3><?php echo esc_html(get_the_title($n)); ?></h3><p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($n->post_content),28)); ?></p><a href="<?php echo esc_url(get_permalink($n)); ?>">Leia a notícia</a></div>
-        </article>
-      <?php endforeach; endif; ?>
+      <header class="section-heading ruled">
+        <p>NOVIDADES</p>
+        <h2>CSAMBA</h2>
+      </header>
+      <?php if ($news): ?>
+        <?php foreach ($news as $index => $n): ?>
+          <?php
+            $categories = get_the_category($n->ID);
+            $category   = !empty($categories) ? $categories[0] : null;
+            $is_reverse = $index % 2 !== 0;
+          ?>
+          <div class="news-item">
+            <article class="news-card hover-image <?php echo $is_reverse ? 'is-reverse' : ''; ?>">
+              <?php if (has_post_thumbnail($n->ID)): ?>
+                <a href="<?php echo esc_url(get_permalink($n)); ?>" class="news-image" >
+                  <img loading="lazy" src="<?php echo esc_url(csamba_image_url($n->ID,'csamba-card',get_the_title($n))); ?>" alt="">
+                </a>
+              <?php endif; ?>
+              <div class="news-copy">
+                <h3>
+                  <a href="<?php echo esc_url(get_permalink($n)); ?>">
+                    <?php echo esc_html(get_the_title($n)); ?>
+                  </a>
+                </h3>
+                <div class="news-meta">
+                  <time datetime="<?php echo esc_attr(get_the_date('c', $n->ID)); ?>">
+                    <?php echo esc_html(get_the_date('d/m/Y', $n->ID)); ?>
+                  </time>
+                  <?php if ($category): ?>
+                    <span class="news-meta-separator">|</span>
+                    <a class="news-category" href="<?php echo esc_url(get_category_link($category->term_id)); ?>">
+                      <?php echo esc_html($category->name); ?>
+                    </a>
+                  <?php endif; ?>
+                </div>
+                <p>
+                  <?php
+                    echo esc_html(wp_trim_words(wp_strip_all_tags($n->post_content),28));
+                  ?>
+                </p>
+              </div>
+            </article>
+            <div class="news-actions">
+              <a href="<?php echo esc_url(get_permalink($n)); ?>" class="button">
+                LER A NOTÍCIA
+              </a>
+              <div class="news-social-actions">
+                <?php if (is_user_logged_in()): ?>
+                  <button type="button" class="news-like" data-post-id="<?php echo esc_attr($n->ID); ?>">
+                    <svg class="news-action-icon news-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2.7l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.7z"/>
+                    </svg>
+                    <span>GOSTEI</span>
+                </button>
+                <?php else: ?>
+                  <a href="<?php echo esc_url(wp_login_url(get_permalink($n))); ?>" class="news-login">
+                    ENTRE PARA CURTIR
+                  </a>
+                <?php endif; ?>
+                <button type="button" class="news-share" data-url="<?php echo esc_url(get_permalink($n)); ?>" data-title="<?php echo esc_attr(get_the_title($n)); ?>">
+                  <svg class="news-action-icon news-share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="18" cy="5" r="2.5"/>
+                      <circle cx="6" cy="12" r="2.5"/>
+                      <circle cx="18" cy="19" r="2.5"/>
+                      <path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/>
+                  </svg>
+                  <span>COMPARTILHAR</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
 
-    <aside class="sidebar-home">
-      <header class="section-heading ruled"><p>AGENDA</p><h2>CSAMBA</h2></header>
-      <div class="agenda-list">
-        <?php if($event_query->have_posts()): while($event_query->have_posts()): $event_query->the_post();
-          $date = function_exists('get_field') ? get_field('evento_data') : '';
-          $time = function_exists('get_field') ? get_field('evento_hora') : '';
-          $band_id = function_exists('get_field') ? get_field('evento_banda') : null;
-          $venue_id = function_exists('get_field') ? get_field('evento_casa') : null;
-          $date_obj = $date ? DateTime::createFromFormat('Ymd', $date) : null;
-        ?>
-          <a class="agenda-item" href="<?php the_permalink(); ?>">
-            <span class="agenda-date"><strong><?php echo $date_obj ? esc_html($date_obj->format('d')) : '--'; ?></strong><small><?php echo $date_obj ? esc_html(strtoupper(wp_date('M', $date_obj->getTimestamp()))) : 'DATA'; ?></small></span>
-            <span class="agenda-main"><strong><?php echo esc_html($band_id ? get_the_title($band_id) : get_the_title()); ?></strong><small><?php echo esc_html(trim(($time ? $time.' • ' : '') . ($venue_id ? get_the_title($venue_id) : ''))); ?></small></span>
+    <div class="home-community">
+      <header class="section-heading ruled">
+        <p>EXPLORE O</p>
+        <h2>CSAMBA</h2>
+      </header>
+      <div class="community-cards">
+        <article class="community-card community-register" style="background-image:url('<?php echo esc_url(get_template_directory_uri().'/assets/images/community/bg-cadastre-se-01.jpg'); ?>');">
+          <img class="community-icon" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/community/icon-register-01-white.png'); ?>" alt=""
+            aria-hidden="true">
+          <h3>CADASTRE-SE</h3>
+          <p>Faça parte do CSamba e conecte-se à cena do samba de Porto Alegre.</p>
+          <a href="<?php echo esc_url(home_url('/cadastre-se/')); ?>" class="community-link button button-light">
+            <span>CADASTRE-SE</span>
+            <span aria-hidden="true">→</span>
           </a>
-        <?php endwhile; wp_reset_postdata(); else: ?>
-          <p class="empty-state">Cadastre eventos com data para exibir a próxima agenda automaticamente.</p>
-        <?php endif; ?>
+        </article>
+        <article class="community-card community-play" style="background-image:url('<?php echo esc_url(get_template_directory_uri().'/assets/images/community/bg-play-01.jpg'); ?>');">
+          <img class="community-icon"
+            src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/community/ícone-play-white.png'); ?>" alt=""
+            aria-hidden="true">
+          <h3>CSAMBA PLAY</h3>
+          <p>Playlists para ouvir samba e pagode onde estiver.</p>
+          <a href="#" class="community-link button button-light">
+            <span>OUVIR PLAYLIST</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </article>
+        <article class="community-card community-podcast" style="background-image:url('<?php echo esc_url(get_template_directory_uri().'/assets/images/community/bg-podcast-02.jpg'); ?>');">
+          <img class="community-icon"
+            src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/community/ícone-podcast-02-white.png'); ?>" alt=""
+            aria-hidden="true">
+          <h3>PODCAST</h3>
+          <p>Conversas, histórias e personagens do samba de Porto Alegre.</p>
+          <span class="community-link button button-light is-disabled">
+            <span>EM BREVE</span>
+          </span>
+        </article>
       </div>
-      <a class="button" href="<?php echo esc_url(get_post_type_archive_link('evento')); ?>">Veja toda a agenda</a>
-
-      <div class="promo-grid">
-        <article><div class="promo-icon">♥</div><h3>CADASTRE-SE</h3><p>Participe da comunidade CSamba.</p></article>
-        <article><div class="promo-icon">▶</div><h3>RÁDIO WEB</h3><p>Ouça a rádio CSamba.</p></article>
-        <article><div class="promo-icon">◉</div><h3>PODCAST</h3><p>Ouça os episódios.</p></article>
-      </div>
-
-      <div class="columns-block">
-        <header class="section-heading ruled"><p>COLUNAS</p><h2>CSAMBA</h2></header>
-        <div class="column-cards">
-          <?php foreach($columns as $c): ?><article><img loading="lazy" src="<?php echo esc_url(csamba_image_url($c->ID,'csamba-card',get_the_title($c))); ?>" alt=""><h3><?php echo esc_html(get_the_title($c)); ?></h3><p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($c->post_content),16)); ?></p><a href="<?php echo esc_url(get_permalink($c)); ?>">Leia mais</a></article><?php endforeach; ?>
+      <section class="home-columns">
+        <header class="section-heading ruled">
+          <p>COLUNAS</p>
+          <h2>CSAMBA</h2>
+        </header>
+        <div class="home-column-cards">
+          <?php if ($columns): ?>
+              <?php foreach ($columns as $c): ?>
+                  <?php
+                  $column_terms = get_the_terms($c->ID, 'categoria_coluna');
+                  $column_category = (!is_wp_error($column_terms) && !empty($column_terms)) ? $column_terms[0] : null;
+                  ?>
+                  <article class="home-column-card hover-image">
+                    <div class="home-column-meta">
+                      <?php if ($column_category): ?>
+                          <span><?php echo esc_html($column_category->name); ?></span>
+                      <?php endif; ?>
+                      <time datetime="<?php echo esc_attr(get_the_date('c', $c->ID)); ?>">
+                        <?php echo esc_html(get_the_date('d/m/Y', $c->ID)); ?>
+                      </time>
+                    </div>
+                    <h3>
+                      <a href="<?php echo esc_url(get_permalink($c)); ?>">
+                        <?php echo esc_html(get_the_title($c)); ?>
+                      </a>
+                    </h3>
+                    <a href="<?php echo esc_url(get_permalink($c)); ?>" class="home-column-image">
+                      <img loading="lazy" src="<?php echo esc_url(csamba_image_url($c->ID, 'csamba-card', get_the_title($c))); ?>" alt="">
+                    </a>
+                    <p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($c->post_content), 18)); ?></p>
+                    <a href="<?php echo esc_url(get_permalink($c)); ?>" class="home-column-link">LEIA A COLUNA →</a>
+                  </article>
+              <?php endforeach; ?>
+          <?php else: ?>
+              <p class="empty-state">As primeiras colunas do CSamba serão publicadas em breve.</p>
+          <?php endif; ?>
         </div>
-      </div>
-    </aside>
+      </section>
+    </div>
   </section>
 </div>
 <?php get_footer(); ?>

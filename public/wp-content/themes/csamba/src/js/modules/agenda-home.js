@@ -253,8 +253,8 @@ export function initAgendaHome() {
               `
               : ''
             }
-            <a href="${escapeHTML(event.url)}" class="agenda-featured-link">
-              VER EVENTO →
+            <a href="${escapeHTML(event.url)}" class="agenda-featured-link button">
+              VER EVENTO
             </a>
           </div>
         </article>`;

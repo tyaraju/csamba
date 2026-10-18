@@ -7,7 +7,7 @@ $bands = get_posts(['post_type'=>'banda','posts_per_page'=>3]);
 $columns = get_posts([
     'post_type'=>'coluna',
     'post_status'=>'publish',
-    'posts_per_page'=>3,
+    'posts_per_page'=>7,
     'orderby'=>'date',
     'order'=>'DESC'
 ]);
@@ -389,18 +389,18 @@ wp_reset_postdata();
               </a>
               <div class="news-social-actions">
                 <?php if (is_user_logged_in()): ?>
-                  <button type="button" class="news-like" data-post-id="<?php echo esc_attr($n->ID); ?>">
+                  <button type="button" class="news-like button button-light" data-post-id="<?php echo esc_attr($n->ID); ?>" disabled>
                     <svg class="news-action-icon news-like-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 2.7l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.7z"/>
                     </svg>
                     <span>GOSTEI</span>
                 </button>
                 <?php else: ?>
-                  <a href="<?php echo esc_url(wp_login_url(get_permalink($n))); ?>" class="news-login">
+                  <a href="<?php echo esc_url(wp_login_url(get_permalink($n))); ?>" class="news-login button button-light">
                     ENTRE PARA CURTIR
                   </a>
                 <?php endif; ?>
-                <button type="button" class="news-share" data-url="<?php echo esc_url(get_permalink($n)); ?>" data-title="<?php echo esc_attr(get_the_title($n)); ?>">
+                <button type="button" class="news-share button button-light" data-url="<?php echo esc_url(get_permalink($n)); ?>" data-title="<?php echo esc_attr(get_the_title($n)); ?>">
                   <svg class="news-action-icon news-share-icon" viewBox="0 0 24 24" aria-hidden="true">
                       <circle cx="18" cy="5" r="2.5"/>
                       <circle cx="6" cy="12" r="2.5"/>
@@ -459,38 +459,79 @@ wp_reset_postdata();
           <p>COLUNAS</p>
           <h2>CSAMBA</h2>
         </header>
-        <div class="home-column-cards">
-          <?php if ($columns): ?>
-              <?php foreach ($columns as $c): ?>
+        <?php if ($columns): ?>
+          <?php
+          $column_featured=array_slice($columns,0,4);
+          ?>
+          <div class="home-columns-layout">
+            <div class="swiper home-column-featured-swiper">
+              <div class="swiper-wrapper">
+                <?php foreach($column_featured as $c): ?>
                   <?php
-                  $column_terms = get_the_terms($c->ID, 'categoria_coluna');
-                  $column_category = (!is_wp_error($column_terms) && !empty($column_terms)) ? $column_terms[0] : null;
+                  $column_terms=get_the_terms($c->ID,'categoria_coluna');
+                  $column_category=(!is_wp_error($column_terms)&&!empty($column_terms))?$column_terms[0]:null;
+                  $column_excerpt=get_the_excerpt($c);
+                  if(!$column_excerpt){
+                    $column_excerpt=$c->post_content;
+                  }
+                  $column_excerpt=wp_trim_words(wp_strip_all_tags($column_excerpt),35,'...');
                   ?>
-                  <article class="home-column-card hover-image">
-                    <div class="home-column-meta">
-                      <?php if ($column_category): ?>
-                          <span><?php echo esc_html($column_category->name); ?></span>
-                      <?php endif; ?>
-                      <time datetime="<?php echo esc_attr(get_the_date('c', $c->ID)); ?>">
-                        <?php echo esc_html(get_the_date('d/m/Y', $c->ID)); ?>
-                      </time>
-                    </div>
-                    <h3>
-                      <a href="<?php echo esc_url(get_permalink($c)); ?>">
-                        <?php echo esc_html(get_the_title($c)); ?>
-                      </a>
-                    </h3>
-                    <a href="<?php echo esc_url(get_permalink($c)); ?>" class="home-column-image">
-                      <img loading="lazy" src="<?php echo esc_url(csamba_image_url($c->ID, 'csamba-card', get_the_title($c))); ?>" alt="">
+                  <article class="swiper-slide home-column-featured hover-image">
+                    <a href="<?php echo esc_url(get_permalink($c)); ?>" class="home-column-featured-image">
+                      <img loading="lazy" src="<?php echo esc_url(csamba_image_url($c->ID,'csamba-card',get_the_title($c))); ?>" alt="<?php echo esc_attr(get_the_title($c)); ?>">
                     </a>
-                    <p><?php echo esc_html(wp_trim_words(wp_strip_all_tags($c->post_content), 18)); ?></p>
-                    <a href="<?php echo esc_url(get_permalink($c)); ?>" class="home-column-link">LEIA A COLUNA →</a>
+                    <div class="home-column-featured-overlay">
+                      <div class="home-column-featured-meta">
+                        <?php if($column_category): ?>
+                          <a href="<?php echo esc_url(get_term_link($column_category)); ?>"><?php echo esc_html($column_category->name); ?></a>
+                        <?php endif; ?>
+                        <time datetime="<?php echo esc_attr(get_the_date('c',$c->ID)); ?>"><?php echo esc_html(get_the_date('d/m/Y',$c->ID)); ?></time>
+                      </div>
+                      <h3><a href="<?php echo esc_url(get_permalink($c)); ?>"><?php echo esc_html(get_the_title($c)); ?></a></h3>
+                      <p><?php echo esc_html($column_excerpt); ?></p>
+                      <a href="<?php echo esc_url(get_permalink($c)); ?>" class="home-column-featured-link">LEIA A COLUNA →</a>
+                    </div>
                   </article>
-              <?php endforeach; ?>
-          <?php else: ?>
-              <p class="empty-state">As primeiras colunas do CSamba serão publicadas em breve.</p>
-          <?php endif; ?>
-        </div>
+                <?php endforeach; ?>
+              </div>
+              <button type="button" class="home-column-prev" aria-label="Coluna anterior">‹</button>
+              <button type="button" class="home-column-next" aria-label="Próxima coluna">›</button>
+              <div class="swiper-pagination home-column-pagination"></div>
+            </div>
+            <?php
+              $column_categories=get_terms([
+                'taxonomy'=>'categoria_coluna',
+                'hide_empty'=>false,
+                'orderby'=>'name',
+                'order'=>'ASC'
+              ]);
+              ?>
+
+              <?php if(!is_wp_error($column_categories)&&!empty($column_categories)): ?>
+                <div class="home-column-categories">
+                  <?php foreach($column_categories as $category): ?>
+                    <?php
+                    $image_id=get_field('imagem_categoria','categoria_coluna_'.$category->term_id);
+                    $image_url=$image_id?wp_get_attachment_image_url($image_id,'medium_large'):'';
+                    ?>
+                    <a href="<?php echo esc_url(get_term_link($category)); ?>" class="home-column-category">
+                      <div class="home-column-category-image hover-image">
+                        <?php if($image_url): ?>
+                          <img src="<?php echo esc_url($image_url); ?>" alt="" loading="lazy">
+                        <?php endif; ?>
+                        <span class="home-column-category-arrow" aria-hidden="true">→</span>
+                      </div>
+                      <div class="home-column-category-info">
+                        <h3><?php echo esc_html($category->name); ?></h3>
+                      </div>
+                    </a>
+                  <?php endforeach; ?>
+                </div>
+              <?php endif; ?>
+          </div>
+        <?php else: ?>
+          <p class="empty-state">As primeiras colunas do CSamba serão publicadas em breve.</p>
+        <?php endif; ?>
       </section>
     </div>
   </section>

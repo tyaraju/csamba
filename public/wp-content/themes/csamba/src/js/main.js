@@ -1,5 +1,5 @@
 import Swiper from 'swiper';
-import { Autoplay, Keyboard, Pagination } from 'swiper/modules';
+import { Autoplay, Keyboard, Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import '../css/app.css';
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAgendaHome();
     initHousesHome();
 });
-Swiper.use([Autoplay, Keyboard, Pagination]);
+Swiper.use([Autoplay, Keyboard, Navigation, Pagination]);
 
 const menuButton = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.main-nav');
@@ -130,5 +130,37 @@ if (
     if (!event.target.closest('.house-search-field')) {
       closeResults();
     }
+  });
+
+} // <-- FECHA O IF DA BUSCA DE CASAS
+
+
+// =========================================================
+// COLUNAS CSAMBA
+// =========================================================
+
+const columnsSwiperEl = document.querySelector('.home-column-featured-swiper');
+
+if (columnsSwiperEl) {
+  const columnSlides = columnsSwiperEl.querySelectorAll('.swiper-slide');
+
+  const columnsSwiper = new Swiper(columnsSwiperEl, {
+    modules: [Navigation, Pagination],
+
+    slidesPerView: 1,
+    spaceBetween: 0,
+    speed: 500,
+
+    loop: columnSlides.length > 1,
+
+    navigation: {
+      nextEl: columnsSwiperEl.querySelector('.home-column-next'),
+      prevEl: columnsSwiperEl.querySelector('.home-column-prev'),
+    },
+
+    pagination: {
+      el: columnsSwiperEl.querySelector('.home-column-pagination'),
+      clickable: true,
+    },
   });
 }

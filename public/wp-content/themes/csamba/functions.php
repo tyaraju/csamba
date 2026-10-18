@@ -162,6 +162,25 @@ function csamba_register_content_types(): void
     'show_in_rest' => true,
     'rewrite' => ['slug' => 'genero'],
   ]);
+  register_taxonomy('categoria_coluna',['coluna'],[
+    'label'=>'Categorias das Colunas',
+    'labels'=>[
+    'name'=>'Categorias das Colunas',
+    'singular_name'=>'Categoria da Coluna',
+    'search_items'=>'Buscar categorias',
+    'all_items'=>'Todas as categorias',
+    'edit_item'=>'Editar categoria',
+    'update_item'=>'Atualizar categoria',
+    'add_new_item'=>'Adicionar categoria',
+    'new_item_name'=>'Nome da nova categoria',
+    'menu_name'=>'Categorias',
+    ],
+    'public'=>true,
+    'hierarchical'=>true,
+    'show_admin_column'=>true,
+    'show_in_rest'=>true,
+    'rewrite'=>['slug'=>'colunas/categoria'],
+  ]);
 }
 add_action('init', 'csamba_register_content_types');
 
@@ -1202,3 +1221,39 @@ function csamba_get_events(): void {
       'events' => $events,
   ]);
 }
+
+add_action('init',function(){
+  register_post_type('frase_rodape',[
+    'labels'=>[
+      'name'=>'Frases do rodapé',
+      'singular_name'=>'Frase do rodapé',
+      'add_new_item'=>'Adicionar frase musical'
+    ],
+    'public'=>false,
+    'show_ui'=>true,
+    'show_in_rest'=>true,
+    'menu_icon'=>'dashicons-format-quote',
+    'supports'=>['title','thumbnail','custom-fields']
+  ]);
+});
+
+function csamba_footer_daily_quote(){
+  $quotes=get_posts([
+    'post_type'=>'frase_rodape',
+    'post_status'=>'publish',
+    'posts_per_page'=>-1,
+    'orderby'=>'ID',
+    'order'=>'ASC'
+  ]);
+  if(!$quotes){
+    return null;
+  }
+  $day=(int)floor(wp_date('U',null,new DateTimeZone('UTC'))/86400);
+  return $quotes[$day%count($quotes)];
+}
+add_action('after_setup_theme',function(){
+  register_nav_menus([
+    'footer_explore'=>'Rodapé — Explore',
+    'footer_community'=>'Rodapé — Participe'
+  ]);
+});

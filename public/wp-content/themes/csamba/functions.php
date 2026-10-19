@@ -248,7 +248,9 @@ function csamba_register_acf_fields(): void
     ['key' => 'field_banda_instagram', 'label' => 'Instagram', 'name' => 'banda_instagram', 'type' => 'url'],
     ['key' => 'field_banda_youtube', 'label' => 'Canal no YouTube', 'name' => 'banda_youtube', 'type' => 'url'],
     ['key' => 'field_banda_spotify', 'label' => 'Spotify', 'name' => 'banda_spotify', 'type' => 'url'],
-
+    ['key' => 'field_banda_contato_url','label' => 'Contato para shows','name' => 'banda_contato_url','type' => 'url','instructions' => 'Link de WhatsApp da produção, site ou formulário de contato.','placeholder' => 'https://wa.me/5551999999999'],
+    ['key' => 'field_csamba_destaque','label' => 'Destaque na página de bandas','name' => 'csamba_destaque','type' => 'true_false','instructions' => 'Exibe esta banda no destaque da archive. Quando houver várias, elas aparecem no carrossel.','message' => 'Destacar esta banda','default_value' => 0,'ui' => 1,'ui_on_text' => 'Sim','ui_off_text' => 'Não','wrapper' => ['width' => '50']],
+    ['key' => 'field_csamba_destaque_ordem', 'label' => 'Ordem do destaque', 'name' => 'csamba_destaque_ordem', 'type' => 'number', 'instructions' => 'Menores números aparecem primeiro. Sem preenchimento, vai para o final.', 'min' => 0, 'step' => 1, 'placeholder' => '1', 'wrapper' => ['width' => '50'], 'conditional_logic' => [[['field' => 'field_csamba_destaque',       'operator' => '==',       'value' => '1']]]],
     ['key' => 'field_banda_tab_fotos', 'label' => 'Fotos', 'name' => '', 'type' => 'tab', 'placement' => 'top'],
     ['key' => 'field_banda_fotos_info', 'label' => 'Galeria', 'name' => '', 'type' => 'message', 'message' => 'Use estes campos para a galeria principal da banda. A imagem destacada do WordPress continua sendo a foto/capa principal.'],
   ];

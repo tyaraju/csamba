@@ -164,3 +164,14 @@ if (columnsSwiperEl) {
     },
   });
 }
+
+if (document.body.classList.contains('post-type-archive-banda')) {
+  import('./modules/archive-bandas.js').catch((error) => {
+    console.error('Erro ao carregar a archive de bandas:', error);
+  });
+}
+if (document.body.classList.contains('single-banda')) {
+  import('./modules/single-banda.js').catch((error) => {
+    console.error('Erro ao carregar a galeria da banda:', error);
+  });
+}

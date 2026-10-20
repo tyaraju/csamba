@@ -628,6 +628,37 @@ function csamba_register_acf_fields(): void
         'preview_size' => 'medium',
         'wrapper' => ['width' => '33'],
       ],
+    ],[
+      'key' => 'field_casa_destaque',
+      'label' => 'Destaque na página de casas',
+      'name' => 'casa_destaque',
+      'type' => 'true_false',
+      'message' => 'Destacar esta casa',
+      'instructions' => 'Se várias casas estiverem marcadas, aparecem em carrossel.',
+      'default_value' => 0,
+      'ui' => 1,
+      'ui_on_text' => 'Sim',
+      'ui_off_text' => 'Não',
+      'wrapper' => ['width' => '50'],
+    ],
+    [
+      'key' => 'field_casa_destaque_ordem',
+      'label' => 'Ordem do destaque',
+      'name' => 'casa_destaque_ordem',
+      'type' => 'number',
+      'min' => 0,
+      'step' => 1,
+      'instructions' => 'Menores números primeiro. Vazio fica no final.',
+      'wrapper' => ['width' => '50'],
+      'conditional_logic' => [
+        [
+          [
+            'field' => 'field_casa_destaque',
+            'operator' => '==',
+            'value' => '1',
+          ],
+        ],
+      ],
     ],
     'location' => [[
       [
@@ -1259,3 +1290,479 @@ add_action('after_setup_theme',function(){
     'footer_community'=>'Rodapé — Participe'
   ]);
 });
+
+/* =========================
+   BANDAS — FORMULÁRIO
+   ========================= */
+
+/*
+ * Campo privado de recebimento.
+ * Grupo separado para não alterar os campos existentes.
+ */
+add_action('acf/init', function () {
+  if (!function_exists('acf_add_local_field_group')) {
+    return;
+  }
+
+  acf_add_local_field_group([
+    'key'   => 'group_csamba_banda_orcamento',
+    'title' => 'CSamba — Recebimento de orçamentos',
+    'fields' => [
+      [
+        'key'   => 'field_csamba_banda_form_ativo',
+        'label' => 'Ativar formulário de orçamento',
+        'name'  => 'banda_form_ativo',
+        'type'  => 'true_false',
+        'ui'    => 1,
+        'default_value' => 0,
+        'instructions' =>
+          'O formulário aparece quando estiver ativo e houver um e-mail válido.',
+      ],
+      [
+        'key'   => 'field_csamba_banda_email_orcamento',
+        'label' => 'E-mail para receber os pedidos',
+        'name'  => 'banda_email_orcamento',
+        'type'  => 'email',
+        'instructions' =>
+          'Uso interno. Este endereço não aparece no HTML público.',
+      ],
+    ],
+    'location' => [
+      [
+        [
+          'param'    => 'post_type',
+          'operator' => '==',
+          'value'    => 'banda',
+        ],
+      ],
+    ],
+  ]);
+});
+
+/*
+ * Usuários logados e visitantes usam o mesmo tratamento.
+ */
+add_action(
+  'admin_post_csamba_band_quote',
+  'csamba_handle_band_quote'
+);
+
+add_action(
+  'admin_post_nopriv_csamba_band_quote',
+  'csamba_handle_band_quote'
+);
+
+function csamba_handle_band_quote() {
+  if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    wp_die('Método não permitido.', '', ['response' => 405]);
+  }
+
+  $read = static function ($key) {
+    $value = $_POST[$key] ?? '';
+
+    return is_string($value) ? wp_unslash($value) : '';
+  };
+
+  $band_id = absint($read('band_id'));
+
+  if (
+    !$band_id
+    || get_post_type($band_id) !== 'banda'
+    || get_post_status($band_id) !== 'publish'
+  ) {
+    wp_die('Banda não encontrada.', '', ['response' => 404]);
+  }
+
+  $redirect = static function ($status) use ($band_id) {
+    $url = add_query_arg(
+      'orcamento',
+      $status,
+      get_permalink($band_id)
+    );
+
+    wp_safe_redirect($url . '#orcamento', 303);
+    exit;
+  };
+
+  $nonce = sanitize_text_field($read('quote_nonce'));
+
+  if (!wp_verify_nonce($nonce, 'csamba_band_quote_' . $band_id)) {
+    $redirect('sessao');
+  }
+
+  $enabled = get_post_meta(
+    $band_id,
+    'banda_form_ativo',
+    true
+  ) === '1';
+
+  $recipient = sanitize_email(
+    (string) get_post_meta(
+      $band_id,
+      'banda_email_orcamento',
+      true
+    )
+  );
+
+  if (!$enabled || !is_email($recipient)) {
+    $redirect('indisponivel');
+  }
+
+  // Campo invisível para reduzir envios automatizados.
+  if (trim($read('quote_company_website')) !== '') {
+    $redirect('erro');
+  }
+
+  /*
+   * Limite por IP, sem armazenar o endereço em texto.
+   * Não confia em cabeçalhos de proxy enviados pelo visitante.
+   */
+  $remote_address = $_SERVER['REMOTE_ADDR'] ?? '';
+
+  $rate_key = 'cs_bq_' . hash_hmac(
+    'sha256',
+    (string) $remote_address,
+    wp_salt('nonce')
+  );
+
+  $attempts = (int) get_transient($rate_key);
+
+  if ($attempts >= 5) {
+    $redirect('limite');
+  }
+
+  set_transient(
+    $rate_key,
+    $attempts + 1,
+    15 * MINUTE_IN_SECONDS
+  );
+
+  $name    = sanitize_text_field($read('quote_name'));
+  $email   = sanitize_email($read('quote_email'));
+  $phone   = sanitize_text_field($read('quote_phone'));
+  $date    = sanitize_text_field($read('quote_date'));
+  $city    = sanitize_text_field($read('quote_city'));
+  $type    = sanitize_text_field($read('quote_type'));
+  $message = sanitize_textarea_field($read('quote_message'));
+
+  $allowed_types = [
+    'particular' => 'Festa particular',
+    'casamento'  => 'Casamento',
+    'corporativo'=> 'Evento corporativo',
+    'bar_casa'   => 'Bar / casa de shows',
+    'outro'      => 'Outro',
+  ];
+
+  if (
+    $name === ''
+    || strlen($name) > 150
+    || !is_email($email)
+    || strlen($email) > 254
+    || $phone === ''
+    || strlen($phone) > 60
+    || $city === ''
+    || strlen($city) > 150
+    || !isset($allowed_types[$type])
+    || $message === ''
+    || strlen($message) > 6000
+    || $read('quote_consent') !== '1'
+  ) {
+    $redirect('dados');
+  }
+
+  $formatted_date = 'A combinar';
+
+  if ($date !== '') {
+    $date_obj = DateTimeImmutable::createFromFormat(
+      '!Y-m-d',
+      $date,
+      wp_timezone()
+    );
+
+    if (
+      !$date_obj
+      || $date_obj->format('Y-m-d') !== $date
+      || $date < current_time('Y-m-d')
+    ) {
+      $redirect('dados');
+    }
+
+    $formatted_date = $date_obj->format('d/m/Y');
+  }
+
+  $band_title = sanitize_text_field(
+    wp_strip_all_tags(get_the_title($band_id))
+  );
+
+  $subject = '[CSamba] Pedido de orçamento — ' . $band_title;
+
+  $body = implode("\n", [
+    'Novo pedido de orçamento pelo CSamba',
+    '',
+    'Banda: ' . $band_title,
+    'Perfil: ' . get_permalink($band_id),
+    '',
+    'Nome: ' . $name,
+    'E-mail: ' . $email,
+    'Telefone / WhatsApp: ' . $phone,
+    'Data do evento: ' . $formatted_date,
+    'Cidade / UF: ' . $city,
+    'Tipo de evento: ' . $allowed_types[$type],
+    '',
+    'Mensagem:',
+    $message,
+    '',
+    'O visitante autorizou o encaminhamento destes dados à banda',
+    'para atendimento deste pedido.',
+    '',
+    'Para responder ao interessado, use Responder neste e-mail.',
+  ]);
+
+  /*
+   * O remetente continua sendo o configurado no WordPress/SMTP.
+   * A resposta vai para o visitante.
+   */
+  $sent = wp_mail(
+    $recipient,
+    $subject,
+    $body,
+    [
+      'Content-Type: text/plain; charset=UTF-8',
+      'Reply-To: ' . $email,
+    ]
+  );
+
+  $redirect($sent ? 'enviado' : 'erro');
+}
+/* =========================
+   CASAS — FORMULÁRIO
+   ========================= */
+
+add_action('acf/init', function () {
+  if (!function_exists('acf_add_local_field_group')) {
+    return;
+  }
+
+  acf_add_local_field_group([
+    'key'   => 'group_csamba_house_contact',
+    'title' => 'CSamba — Recebimento de mensagens',
+    'fields' => [
+      [
+        'key'   => 'field_csamba_house_form_active',
+        'label' => 'Ativar formulário de contato',
+        'name'  => 'casa_form_ativo',
+        'type'  => 'true_false',
+        'ui'    => 1,
+        'default_value' => 0,
+      ],
+      [
+        'key'   => 'field_csamba_house_contact_email',
+        'label' => 'E-mail para receber mensagens',
+        'name'  => 'casa_email_contato',
+        'type'  => 'email',
+        'instructions' =>
+          'Uso interno. Não é exibido no HTML público da casa.',
+      ],
+    ],
+    'location' => [
+      [
+        [
+          'param'    => 'post_type',
+          'operator' => '==',
+          'value'    => 'casa',
+        ],
+      ],
+    ],
+  ]);
+});
+
+add_action(
+  'admin_post_csamba_house_contact',
+  'csamba_handle_house_contact'
+);
+
+add_action(
+  'admin_post_nopriv_csamba_house_contact',
+  'csamba_handle_house_contact'
+);
+
+function csamba_handle_house_contact() {
+  if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    wp_die('Método não permitido.', '', ['response' => 405]);
+  }
+
+  $read = static function ($key) {
+    $value = $_POST[$key] ?? '';
+
+    return is_string($value) ? wp_unslash($value) : '';
+  };
+
+  $house_id = absint($read('house_id'));
+
+  if (
+    !$house_id
+    || get_post_type($house_id) !== 'casa'
+    || get_post_status($house_id) !== 'publish'
+  ) {
+    wp_die('Casa não encontrada.', '', ['response' => 404]);
+  }
+
+  $redirect = static function ($status) use ($house_id) {
+    $url = add_query_arg(
+      'contato_casa',
+      $status,
+      get_permalink($house_id)
+    );
+
+    wp_safe_redirect($url . '#casa-contato', 303);
+    exit;
+  };
+
+  if (!wp_verify_nonce(
+    sanitize_text_field($read('house_nonce')),
+    'csamba_house_contact_' . $house_id
+  )) {
+    $redirect('sessao');
+  }
+
+  $enabled = get_post_meta($house_id, 'casa_form_ativo', true) === '1';
+
+  $recipient_value = get_post_meta(
+    $house_id,
+    'casa_email_contato',
+    true
+  );
+
+  $recipient = is_string($recipient_value)
+    ? sanitize_email($recipient_value)
+    : '';
+
+  if (!$enabled || !is_email($recipient)) {
+    $redirect('indisponivel');
+  }
+
+  if (trim($read('house_website')) !== '') {
+    $redirect('erro');
+  }
+
+  $rate_key = 'cs_hc_' . hash_hmac(
+    'sha256',
+    (string) ($_SERVER['REMOTE_ADDR'] ?? ''),
+    wp_salt('nonce')
+  );
+
+  $attempts = (int) get_transient($rate_key);
+
+  if ($attempts >= 5) {
+    $redirect('limite');
+  }
+
+  set_transient(
+    $rate_key,
+    $attempts + 1,
+    15 * MINUTE_IN_SECONDS
+  );
+
+  $name    = sanitize_text_field($read('house_name'));
+  $email   = sanitize_email($read('house_email'));
+  $phone   = sanitize_text_field($read('house_phone'));
+  $subject = sanitize_text_field($read('house_subject'));
+  $date    = sanitize_text_field($read('house_date'));
+  $people  = trim($read('house_people'));
+  $message = sanitize_textarea_field($read('house_message'));
+
+  $subjects = [
+    'duvida'      => 'Dúvida sobre a casa',
+    'reserva'     => 'Consulta de reserva',
+    'evento'      => 'Evento particular / corporativo',
+    'programacao' => 'Programação e ingressos',
+    'outro'       => 'Outro assunto',
+  ];
+
+  if (
+    $name === ''
+    || strlen($name) > 400
+    || !is_email($email)
+    || strlen($email) > 254
+    || $phone === ''
+    || strlen($phone) > 100
+    || !isset($subjects[$subject])
+    || $message === ''
+    || strlen($message) > 8000
+    || $read('house_consent') !== '1'
+  ) {
+    $redirect('dados');
+  }
+
+  $formatted_date = 'Não informada';
+
+  if ($date !== '') {
+    $date_obj = DateTimeImmutable::createFromFormat(
+      '!Y-m-d',
+      $date,
+      wp_timezone()
+    );
+
+    if (
+      !$date_obj
+      || $date_obj->format('Y-m-d') !== $date
+      || $date < current_time('Y-m-d')
+    ) {
+      $redirect('dados');
+    }
+
+    $formatted_date = $date_obj->format('d/m/Y');
+  }
+
+  if (
+    $people !== ''
+    && (
+      !ctype_digit($people)
+      || (int) $people < 1
+      || (int) $people > 10000
+    )
+  ) {
+    $redirect('dados');
+  }
+
+  $house_title = sanitize_text_field(
+    wp_strip_all_tags(get_the_title($house_id))
+  );
+
+  $body = implode("\n", [
+    'Nova mensagem pelo CSamba',
+    '',
+    'Casa: ' . $house_title,
+    'Perfil: ' . get_permalink($house_id),
+    'Assunto: ' . $subjects[$subject],
+    '',
+    'Nome: ' . $name,
+    'E-mail: ' . $email,
+    'WhatsApp: ' . $phone,
+    'Data da visita: ' . $formatted_date,
+    'Quantidade de pessoas: ' . (
+      $people !== '' ? (string) (int) $people : 'Não informada'
+    ),
+    '',
+    'Mensagem:',
+    $message,
+    '',
+    'O visitante autorizou o encaminhamento dos dados',
+    'para atendimento desta mensagem.',
+    '',
+    'Pedidos de reserva dependem de confirmação da casa.',
+    'Use Responder para falar com o visitante.',
+  ]);
+
+  $sent = wp_mail(
+    $recipient,
+    '[CSamba] ' . $subjects[$subject] . ' — ' . $house_title,
+    $body,
+    [
+      'Content-Type: text/plain; charset=UTF-8',
+      'Reply-To: ' . $email,
+    ]
+  );
+
+  $redirect($sent ? 'enviado' : 'erro');
+}

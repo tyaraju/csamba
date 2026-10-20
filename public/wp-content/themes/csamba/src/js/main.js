@@ -175,3 +175,14 @@ if (document.body.classList.contains('single-banda')) {
     console.error('Erro ao carregar a galeria da banda:', error);
   });
 }
+if (document.body.classList.contains('post-type-archive-casa')) {
+  import('./modules/archive-casas.js').catch((error) => {
+    console.error('Erro ao carregar a archive de casas:', error);
+  });
+}
+if (document.body.classList.contains('single-casa')) {
+  import('./modules/single-casa.js').catch((error) => {
+    console.error('Erro ao carregar a galeria da casa:', error);
+  });
+}
+import './modules/sticky-navigation.js';

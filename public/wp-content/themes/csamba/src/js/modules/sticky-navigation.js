@@ -12,8 +12,10 @@ function initStickyNavigation() {
   const adminBar = document.getElementById('wpadminbar');
 
   const bandNav = document.querySelector(
-  '.band-single .band-single__nav, .single-casa .casa-section-nav'
-  );
+  '.band-single .band-single__nav, ' +
+  '.single-casa .casa-section-nav, ' +
+  '.event-single .event-section-nav'
+);
 
   let fixed = false;
   let scheduled = false;
@@ -130,7 +132,9 @@ function initStickyNavigation() {
    */
   document.addEventListener('click', (event) => {
     const link = event.target.closest(
-      '.band-single a[href^="#"], .single-casa a[href^="#"]'
+      '.band-single a[href^="#"], ' +
+      '.single-casa a[href^="#"], ' +
+      '.event-single a[href^="#"]'
     );
 
     if (

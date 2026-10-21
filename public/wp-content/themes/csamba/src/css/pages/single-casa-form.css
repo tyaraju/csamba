@@ -1,0 +1,509 @@
+/* =========================
+   CASAS — LAYOUT COM FORM
+   ========================= */
+
+.single-casa--contact .casa-section {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Menu centralizado */
+.single-casa--contact .casa-section-nav {
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0;
+  border-bottom: 1px solid #cdd5de;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.single-casa--contact .casa-section-nav a {
+  flex-shrink: 0;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 18px;
+  font-weight: 700;
+}
+
+/* Títulos com detalhe vertical */
+.single-casa--contact .casa-section-heading {
+  margin-bottom: 18px;
+  padding: 0 0 0 14px;
+  border-left: 5px solid var(--casa-green);
+}
+
+.single-casa--contact .casa-section-heading::before {
+  display: none;
+}
+
+.single-casa--contact .casa-section-heading h2 {
+  font-size: clamp(22px, 2.2vw, 28px);
+}
+
+/* Visão geral */
+.casa-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 22px;
+  scroll-margin-top: 90px;
+}
+
+.casa-overview-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.single-casa--contact #casa-sobre {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.casa-overview-panel {
+  flex: 1;
+  padding: 24px;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: var(--casa-shadow);
+}
+
+.casa-overview-panel .casa-visit-list {
+  margin-bottom: 0;
+}
+
+.casa-overview-panel .casa-features {
+  margin-top: 22px;
+}
+
+.casa-visit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 20px;
+}
+
+.casa-visit-note {
+  margin: 0;
+  color: var(--casa-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Programação */
+.casa-program-card {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: var(--casa-shadow);
+}
+
+.casa-program-card > a {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--casa-text);
+}
+
+.casa-program-card__top {
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr);
+}
+
+.casa-program-card__date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 6px;
+  color: var(--casa-text);
+}
+
+.casa-program-card__date strong {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.casa-program-card__date small {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.casa-program-card__image {
+  min-width: 0;
+  overflow: hidden;
+  aspect-ratio: 2.2;
+}
+
+.casa-program-card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.casa-program-card__body {
+  padding: 15px;
+}
+
+.casa-program-card__body h3 {
+  margin: 0 0 7px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.casa-program-card__body > p {
+  margin: 0 0 12px;
+  color: var(--casa-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.casa-program-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  color: var(--casa-muted);
+  font-size: 11px;
+}
+
+.casa-program-card__details > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.casa-program-card__details .casa-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.casa-program-card a:hover h3 {
+  color: var(--casa-green-dark);
+}
+
+/* Formulário integrado */
+.casa-contact-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr);
+  overflow: hidden;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: var(--casa-shadow);
+}
+
+.casa-contact-card__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 28px;
+  background: linear-gradient(135deg, #e1f2e6, #eff8f1);
+}
+
+.casa-contact-card__intro > .casa-icon {
+  width: 46px;
+  height: 46px;
+  margin-bottom: 18px;
+  color: var(--casa-green-dark);
+}
+
+.casa-contact-card__intro h3 {
+  margin: 0 0 12px;
+  font-size: clamp(22px, 2vw, 27px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.035em;
+}
+
+.casa-contact-card__intro > p {
+  margin: 0;
+  color: #414b56;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.casa-contact-card__intro ul {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin: 26px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.casa-contact-card__intro li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.casa-contact-card__intro li .casa-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--casa-green-dark);
+}
+
+.casa-contact-card__intro > .casa-button {
+  width: 100%;
+  font-size: 12px;
+}
+
+.casa-contact-card__body {
+  min-width: 0;
+  padding: 26px;
+}
+
+.casa-contact-form {
+  position: relative;
+}
+
+.casa-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.casa-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.casa-form-field--full {
+  grid-column: 1 / -1;
+}
+
+.casa-form-field label {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.casa-form-field :is(input, select, textarea) {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #ccd6e0;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--casa-text);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.casa-form-field textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.casa-contact-form :is(input, select, textarea):focus-visible {
+  outline: 3px solid var(--casa-green);
+  outline-offset: 3px;
+}
+
+.casa-form-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 20px;
+  color: var(--casa-muted);
+  font-size: 11px;
+  line-height: 1.7;
+  cursor: pointer;
+}
+
+.casa-form-consent input {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: var(--casa-green);
+}
+
+.casa-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.casa-form-footer p {
+  margin: 0;
+  color: var(--casa-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.casa-form-footer > button {
+  flex-shrink: 0;
+}
+
+.casa-form-feedback {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border: 1px solid #e4c38d;
+  border-radius: 5px;
+  background: #fff7e8;
+  color: #704b10;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.casa-form-feedback--success {
+  border-color: #b7d9c4;
+  background: #eef8f1;
+  color: #17673f;
+}
+
+.casa-form-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Outras casas */
+.casa-related {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.casa-related article {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: var(--casa-shadow);
+}
+
+.casa-related a {
+  display: block;
+  height: 100%;
+  color: var(--casa-text);
+}
+
+.casa-related__image {
+  overflow: hidden;
+  aspect-ratio: 2.3;
+}
+
+.casa-related__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.casa-related__copy {
+  padding: 14px;
+}
+
+.casa-related__copy h3 {
+  margin: 0 0 7px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.casa-related__copy p {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin: 0;
+  color: var(--casa-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.casa-related__copy .casa-icon {
+  width: 15px;
+  height: 17px;
+  color: var(--casa-green);
+}
+
+/* Responsivo */
+@media (max-width: 800px) {
+  .casa-overview,
+  .casa-contact-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .single-casa--contact .casa-section-nav {
+    justify-content: flex-start;
+  }
+
+  .single-casa--contact .casa-section-nav a {
+    padding-inline: 14px;
+    font-size: 12px;
+  }
+
+  .casa-related {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 540px) {
+  .casa-form-grid,
+  .casa-related {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .casa-contact-card__intro,
+  .casa-contact-card__body,
+  .casa-overview-panel {
+    padding: 22px;
+  }
+
+  .casa-form-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .casa-form-footer > button {
+    width: 100%;
+  }
+}
+.single-casa .casa-section-nav {
+  position: sticky;
+  top: calc(
+    var(--cs-admin-offset, 0px)
+    + var(--cs-fixed-nav-height, 0px)
+  );
+  z-index: 900;
+  flex-shrink: 0;
+  background: #ececec;
+}
+
+.single-casa [id] {
+  scroll-margin-top: calc(
+    var(--cs-admin-offset, 0px)
+    + var(--cs-fixed-nav-height, 0px)
+    + var(--cs-band-nav-height, 0px)
+    + 20px
+  );
+}
+

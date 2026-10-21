@@ -185,4 +185,14 @@ if (document.body.classList.contains('single-casa')) {
     console.error('Erro ao carregar a galeria da casa:', error);
   });
 }
+if (document.body.classList.contains('post-type-archive-evento')) {
+  import('./modules/archive-agenda.js').catch((error) => {
+    console.error('Erro ao carregar a agenda:', error);
+  });
+}
+if (document.body.classList.contains('single-evento')) {
+  import('./modules/single-evento.js').catch((error) => {
+    console.error('Erro ao carregar a single do evento:', error);
+  });
+}
 import './modules/sticky-navigation.js';

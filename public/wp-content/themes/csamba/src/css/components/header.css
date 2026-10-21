@@ -1,0 +1,350 @@
+.topbar {
+  background: #0e0e0f;
+  color: #fff;
+  font-size: 12px;
+}
+
+.topbar-inner {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 28px;
+}
+
+.top-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-search input {
+  width: 220px;
+  height: 26px;
+  border: 1px solid #34383e;
+  background: #16181b;
+  color: #fff;
+  padding: 0 9px;
+}
+
+.top-search button {
+  height: 26px;
+  border: 0;
+  background: var(--cs-blue);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 14px;
+}
+
+.member-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #cfd3d8;
+}
+
+.member-links a {
+  color: #fff;
+}
+
+.brand-row {
+  min-height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cs-gap-lg);
+  background-image: linear-gradient(to right, black 33%, rgba(255, 255, 255, 0) 0%);
+  background-position: bottom;
+  background-size: 3px 1px;
+  background-repeat: repeat-x;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 0 0 auto;
+}
+
+.brand-mark {
+  width: 76px;
+  height: 76px;
+  border: 10px solid var(--cs-blue);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  transform: skew(-6deg);
+}
+
+.brand-copy {
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.15;
+}
+
+.ad-banner {
+  flex: 0 1 760px;
+  height: 82px;
+  border-radius: 8px;
+  background: linear-gradient(105deg, #dbe9ef, #62a8da 54%, #2b78be);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.nav-shell {
+  background: #ECECEC;
+}
+
+.nav-wrap {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  background-image: linear-gradient(to right, black 33%, rgba(255, 255, 255, 0) 0%);
+  background-position: bottom;
+  background-size: 3px 1px;
+  background-repeat: repeat-x;
+}
+
+.main-nav {
+  width: 100%;
+}
+
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.main-nav li {
+  display: flex;
+}
+
+.main-nav a {
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+  --menu-accent: var(--cs-blue);
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 15px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  transition: all 1s ease-out 0s;
+}
+
+.main-nav a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 6px;
+  border-radius: 0px;
+  background: var(--menu-accent);
+}
+
+.main-nav a:hover {
+  background: #f6f7f8;
+}
+
+.menu-toggle {
+  display: none;
+  margin: 8px 0;
+  border: 0;
+  background: var(--cs-ink);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+}
+/* =========================
+   MENUS FIXOS
+   ========================= */
+
+:root {
+  --cs-admin-offset: 0px;
+  --cs-fixed-nav-height: 0px;
+  --cs-band-nav-height: 0px;
+}
+
+/* O slot mantém o espaço do menu no fluxo. */
+.nav-slot {
+  position: relative;
+}
+
+.nav-shell {
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Logo exibido somente na versão fixa. */
+.nav-brand {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.nav-brand img {
+  display: block;
+  width: 112px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Menu principal compacto */
+.nav-shell.is-fixed {
+  position: fixed;
+  top: var(--cs-admin-offset);
+  right: 0;
+  left: 0;
+  background: var(--cs-bg);
+  box-shadow: 0 3px 16px rgb(0 0 0 / 12%);
+}
+
+.nav-shell.is-fixed .nav-wrap {
+  min-height: 52px;
+  gap: 24px;
+  background-image: none;
+}
+
+.nav-shell.is-fixed .nav-brand {
+  display: flex;
+}
+
+.nav-shell.is-fixed .main-nav {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.nav-shell.is-fixed .main-nav ul {
+  gap: 4px;
+}
+
+.nav-shell.is-fixed .main-nav a {
+  min-height: 40px;
+  padding: 0 12px;
+  font-size: 12px;
+  letter-spacing: .01em;
+}
+
+.nav-shell.is-fixed .main-nav a::before {
+  top: 11px;
+  bottom: 11px;
+  width: 4px;
+}
+
+/* Substitui a transição de 1 segundo em todas as propriedades. */
+.main-nav a {
+  transition:
+    background-color .2s ease,
+    color .2s ease;
+}
+
+/* Menu interno da banda */
+.band-single .band-single__nav {
+  position: sticky;
+  top: calc(
+    var(--cs-admin-offset) + var(--cs-fixed-nav-height)
+  );
+  z-index: 900;
+  flex-shrink: 0;
+  min-height: 50px;
+  margin-top: 0;
+  background: #fff;
+  box-shadow: 0 3px 12px rgb(19 38 61 / 5%);
+}
+
+/* Compensa os dois menus ao navegar pelas âncoras. */
+.band-single [id] {
+  scroll-margin-top: calc(
+    var(--cs-admin-offset)
+    + var(--cs-fixed-nav-height)
+    + var(--cs-band-nav-height)
+    + 20px
+  );
+}
+
+/* Outras âncoras do site compensam o menu principal. */
+.site-main [id]:not(.band-single [id]) {
+  scroll-margin-top: calc(
+    var(--cs-admin-offset) + var(--cs-fixed-nav-height) + 20px
+  );
+}
+
+@media (max-width: 1000px) {
+  .nav-shell.is-fixed .nav-wrap {
+    gap: 16px;
+  }
+
+  .nav-brand img {
+    width: 96px;
+    height: 36px;
+  }
+
+  .nav-shell.is-fixed .main-nav a {
+    padding-inline: 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 767px) {
+  .nav-shell.is-fixed .nav-wrap {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 16px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .nav-shell.is-fixed .main-nav {
+    flex: 1 0 100%;
+    width: 100%;
+  }
+
+  .band-single .band-single__nav {
+    justify-content: flex-start;
+    gap: 0;
+  }
+
+  .band-single .band-single__nav a {
+    min-height: 46px;
+    padding: 12px 14px;
+    white-space: nowrap;
+  }
+}
+/* Entrada suave do menu principal fixo */
+.nav-shell.is-fixed {
+  animation: csamba-menu-enter .28s ease-out both;
+}
+
+@keyframes csamba-menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respeita a preferência por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .nav-shell.is-fixed {
+    animation: none;
+  }
+}

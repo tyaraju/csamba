@@ -1,0 +1,412 @@
+/* PÀGINA BANDA */
+.az-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--cs-line);
+  padding-bottom: 12px;
+}
+
+.az-header h2 {
+  margin: 0;
+  color: var(--cs-blue);
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+  font-size: 30px;
+}
+
+.az-header form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+}
+
+.az-header input {
+  height: 34px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+
+.az-header button {
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--cs-blue);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.az-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.letter-group {
+  flex: 1 1 calc(25% - 28px);
+  min-width: 240px;
+}
+
+.letter-group h3 {
+  margin: 0 0 10px;
+  border-bottom: 1px dotted #777;
+}
+
+.letter-group a {
+  display: block;
+  padding: 3px 4px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+
+.letter-group a:hover {
+  background: #d9dce0;
+}
+
+/* Página da banda */
+.band-hero {
+  display: flex;
+  gap: 0;
+  background: #fff;
+  border-radius: var(--cs-radius);
+  overflow: hidden;
+  box-shadow: var(--cs-shadow);
+}
+
+.band-hero>img {
+  flex: 0 0 52%;
+  max-width: 52%;
+  object-fit: cover;
+  min-height: 420px;
+}
+
+.band-profile {
+  position: relative;
+  flex: 1;
+  padding: 28px 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.band-subnav {
+  position: absolute;
+  left: 34px;
+  top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.band-profile h1 {
+  margin: 0 0 12px;
+  font-size: 46px;
+  font-weight: 400;
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.band-profile h1 strong {
+  display: block;
+}
+
+.band-excerpt {
+  color: #555;
+}
+
+.approve {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  text-align: center;
+  color: var(--cs-blue);
+}
+
+.approve small {
+  display: block;
+  font-size: 8px;
+}
+
+.feature-boxes {
+  display: flex;
+  gap: var(--cs-gap);
+}
+
+.feature-boxes article {
+  flex: 1 1 0;
+  position: relative;
+  min-height: 180px;
+  padding: 22px;
+  border-radius: var(--cs-radius);
+  background: #fff;
+  box-shadow: var(--cs-shadow);
+}
+
+.feature-boxes h2 {
+  margin: 0 0 18px;
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+  font-size: 25px;
+}
+
+.feature-boxes h2 strong {
+  color: var(--cs-blue);
+}
+
+.big-icon {
+  font-size: 52px;
+  color: var(--cs-blue);
+}
+
+.feature-boxes p {
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 12px;
+}
+
+.feature-boxes a {
+  color: var(--cs-blue);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.headline {
+  border-bottom: 4px solid #222;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.headline h2 {
+  margin: 0;
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+}
+
+.headline h2 strong {
+  color: var(--cs-blue);
+}
+
+.date-line {
+  margin: 14px 0 7px;
+  color: var(--cs-blue);
+  font-size: 12px;
+}
+
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pager a {
+  color: var(--cs-blue);
+  font-size: 12px;
+}
+.footer-line {
+  height: 7px;
+  background: #161719;
+  border-radius: 4px;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  color: #666;
+  font-size: 12px;
+}
+
+.mini-logo {
+  width: 32px;
+  height: 32px;
+  border: 5px solid var(--cs-blue);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: #111;
+}
+
+@media (max-width: 1050px) {
+  :root {
+    --cs-gap-lg: 24px;
+  }
+
+  .featured-shell {
+    flex-direction: column;
+  }
+
+  .featured-tabs {
+    flex-basis: auto;
+  }
+
+  .featured-pagination {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .featured-pagination .swiper-pagination-bullet {
+    width: auto !important;
+    flex: 1 1 180px;
+  }
+
+  .featured-pagination .swiper-pagination-bullet-active {
+    transform: translateY(-3px);
+  }
+
+  .home-duo,
+  .content-columns {
+    flex-direction: column;
+  }
+
+  .home-duo>.section-block,
+  .news-col,
+  .sidebar-home {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+}
+
+@media (max-width: 780px) {
+  .container {
+    width: min(calc(100% - 28px), var(--site-width));
+  }
+
+  .topbar-inner {
+    justify-content: center;
+  }
+
+  .member-links {
+    display: none;
+  }
+
+  .brand-row {
+    min-height: 100px;
+  }
+
+  .ad-banner {
+    display: none;
+  }
+
+  .brand-mark {
+    width: 62px;
+    height: 62px;
+    border-width: 8px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .main-nav {
+    display: none;
+  }
+
+  .main-nav.is-open {
+    display: block;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    padding: 8px 0 12px;
+  }
+
+  .main-nav a {
+    min-height: 40px;
+    width: 100%;
+  }
+
+  .featured-slide {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .featured-media {
+    aspect-ratio: 16/10;
+  }
+
+  .featured-copy {
+    flex-basis: auto;
+    padding: 28px 24px;
+  }
+
+  .column-cards,
+  .promo-grid,
+  .feature-boxes {
+    flex-wrap: wrap;
+  }
+
+  .column-cards article,
+  .promo-grid article,
+  .promo-grid>div,
+  .feature-boxes article {
+    flex: 1 1 calc(50% - 14px);
+  }
+
+
+  .archive-title,
+  .archive-featured,
+  .band-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .archive-featured>img,
+  .band-hero>img {
+    max-width: none;
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .band-profile {
+    min-height: 330px;
+  }
+
+  .az-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 520px) {
+  .top-search input {
+    width: 150px;
+  }
+
+  .section-heading h2 {
+    font-size: 25px;
+  }
+
+  .featured-copy h1 {
+    font-size: 36px;
+  }
+
+  .column-cards,
+  .promo-grid,
+  .feature-boxes {
+    flex-direction: column;
+  }
+
+  .column-cards article,
+  .promo-grid article,
+  .promo-grid>div,
+  .feature-boxes article {
+    flex-basis: auto;
+  }
+
+  .archive-title h1 {
+    font-size: 40px;
+  }
+
+  .archive-featured h3,
+  .band-profile h1 {
+    font-size: 36px;
+  }
+}
+

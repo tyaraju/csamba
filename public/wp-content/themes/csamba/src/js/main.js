@@ -195,4 +195,5 @@ if (document.body.classList.contains('single-evento')) {
     console.error('Erro ao carregar a single do evento:', error);
   });
 }
+import './modules/header-menu';
 import './modules/sticky-navigation.js';

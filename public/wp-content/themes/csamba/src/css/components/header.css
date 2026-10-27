@@ -241,9 +241,9 @@
 }
 
 .nav-shell.is-fixed .main-nav a::before {
-  top: 11px;
+  top: 22px;
   bottom: 11px;
-  width: 4px;
+  width: 6px;
 }
 
 /* Substitui a transição de 1 segundo em todas as propriedades. */
@@ -346,5 +346,668 @@
 @media (prefers-reduced-motion: reduce) {
   .nav-shell.is-fixed {
     animation: none;
+  }
+}
+/* =========================
+   HEADER — NOVA IDENTIDADE
+   ========================= */
+
+.site-header--modern {
+  --header-blue: #087aff;
+  --header-ink: #102337;
+  --header-border: #d8dee5;
+  --header-surface: #fff;
+}
+
+.site-header--modern *,
+.site-header--modern *::before,
+.site-header--modern *::after {
+  box-sizing: border-box;
+}
+
+.site-header--modern a {
+  text-decoration: none;
+}
+
+.site-header--modern :is(a, button, input):focus-visible {
+  outline: 3px solid var(--header-blue);
+  outline-offset: 4px;
+}
+
+/* Barra superior */
+
+.site-header--modern .topbar {
+  background: #191f26;
+}
+
+.site-header--modern .topbar-inner {
+  min-height: 44px;
+  gap: 24px;
+}
+
+.site-header--modern .top-search {
+  gap: 10px;
+}
+
+.site-header--modern .top-search > svg {
+  flex-shrink: 0;
+  color: #e1e7ef;
+}
+
+.site-header--modern .top-search input {
+  width: 230px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #48515c;
+  border-radius: 5px;
+  background: #303741;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.site-header--modern .top-search input::placeholder {
+  color: #d0d6de;
+  opacity: 1;
+}
+
+.site-header--modern .top-search button {
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--header-blue);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.site-header--modern .member-links {
+  padding-left: 24px;
+  border-left: 1px solid #4d5560;
+}
+
+.site-header--modern .member-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 32px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Logo e publicidade */
+
+.site-header--modern .brand-row {
+  min-height: 140px;
+  gap: 40px;
+  padding-block: 18px;
+  background-image: none;
+}
+
+.site-header--modern .brand {
+  min-width: 0;
+}
+
+.site-header--modern .brand img {
+  display: block;
+  width: auto;
+  max-width: 270px;
+  height: auto;
+  max-height: 88px;
+  object-fit: contain;
+}
+
+.site-header--modern .ad-banner {
+  flex: 0 1 760px;
+  height: 88px;
+  border-radius: 8px;
+}
+
+/* Barra de navegação */
+
+.site-header--modern .nav-shell {
+  background: transparent;
+}
+
+.site-header--modern .nav-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-height: 68px;
+  padding-block: 7px;
+  border: 1px solid var(--header-border);
+  border-radius: 8px;
+  background: var(--header-surface);
+  background-image: none;
+  box-shadow: 0 3px 12px rgb(16 35 55 / 3%);
+}
+
+.site-header--modern .header-navigation {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+
+.site-header--modern .main-nav {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+.site-header--modern .main-nav > ul {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 0 7px;
+  list-style: none;
+}
+
+.site-header--modern .main-nav li {
+  --menu-accent: #2878d7;
+  --menu-tint: #eaf2fc;
+  --menu-active-text: #175ba8;
+
+  display: block;
+  min-width: 0;
+}
+
+/* Cores das editorias */
+
+.site-header--modern .main-nav .menu-bandas {
+  --menu-accent: #efbd16;
+  --menu-tint: #fff8dc;
+  --menu-active-text: #725300;
+}
+
+.site-header--modern .main-nav .menu-colunas {
+  --menu-accent: #3aa0d8;
+  --menu-tint: #e9f6fd;
+  --menu-active-text: #17678f;
+}
+
+.site-header--modern .main-nav .menu-agenda {
+  --menu-accent: #e04f73;
+  --menu-tint: #fcebf0;
+  --menu-active-text: #b92d53;
+}
+
+.site-header--modern .main-nav .menu-casas {
+  --menu-accent: #3da26d;
+  --menu-tint: #eaf6ef;
+  --menu-active-text: #17673f;
+}
+
+.site-header--modern .main-nav .menu-musicas {
+  --menu-accent: #f08b31;
+  --menu-tint: #fff1e5;
+  --menu-active-text: #a54b0c;
+}
+
+/* Links com os traços verticais */
+
+.site-header--modern .main-nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 50px;
+  padding: 0 17px 0 29px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--header-ink);
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: .015em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color .18s ease,
+    color .18s ease;
+}
+
+.site-header--modern .main-nav a::before {
+  position: absolute;
+  top: 50%;
+  bottom: auto;
+  left: 12px;
+  width: 6px;
+  height: 22px;
+  border-radius: 0;
+  background: var(--menu-accent);
+  content: "";
+  transform: translateY(-50%);
+  transition: height .18s ease;
+}
+
+/* Sublinhado do item atual */
+
+.site-header--modern .main-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--menu-accent);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .18s ease;
+}
+
+.site-header--modern .main-nav a:hover {
+  background: var(--menu-tint);
+  color: var(--menu-active-text);
+}
+
+.site-header--modern .main-nav a:hover::before {
+  height: 27px;
+}
+
+.site-header--modern .main-nav :is(
+  .current-menu-item,
+  .current-menu-parent,
+  .current-menu-ancestor,
+  .is-section-active
+) > a {
+  background: var(--menu-tint);
+  color: var(--menu-active-text);
+}
+
+.site-header--modern .main-nav :is(
+  .current-menu-item,
+  .current-menu-parent,
+  .current-menu-ancestor,
+  .is-section-active
+) > a::after {
+  transform: scaleX(1);
+}
+
+/* Chamada de cadastro */
+
+.site-header--modern .header-register {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 46px;
+  padding: 11px 20px;
+  border: 1px solid var(--header-blue);
+  border-radius: 5px;
+  background: var(--header-blue);
+  color: #fff;
+  font-family: 'ITC Avant Garde', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition:
+    background-color .18s ease,
+    border-color .18s ease;
+}
+
+.site-header--modern .header-register:hover {
+  border-color: #0065d8;
+  background: #0065d8;
+  color: #fff;
+}
+
+.site-header--modern .header-register > span {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Estado fixo: utiliza o JS de sticky existente */
+
+.site-header--modern .nav-shell.is-fixed {
+  background: #fff;
+  box-shadow: 0 5px 20px rgb(16 35 55 / 10%);
+}
+
+.site-header--modern .nav-shell.is-fixed .nav-wrap {
+  gap: 18px;
+  min-height: 62px;
+  padding-block: 6px;
+  border-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.site-header--modern .nav-brand {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.site-header--modern .nav-shell.is-fixed .nav-brand {
+  display: flex;
+}
+
+.site-header--modern .nav-brand img {
+  display: block;
+  width: auto;
+  max-width: 145px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.site-header--modern .nav-shell.is-fixed .main-nav a {
+  min-height: 46px;
+  padding-right: 12px;
+  padding-left: 25px;
+  font-size: 12px;
+}
+
+.site-header--modern .nav-shell.is-fixed .main-nav a::before {
+  left: 10px;
+}
+
+.site-header--modern .nav-shell.is-fixed .header-navigation {
+  gap: 14px;
+}
+
+.site-header--modern .nav-shell.is-fixed .header-register {
+  gap: 12px;
+  min-height: 42px;
+  padding-inline: 15px;
+  font-size: 12px;
+}
+
+/* Botão mobile */
+
+.site-header--modern .menu-toggle {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--header-border);
+  border-radius: 5px;
+  background: #fff;
+  color: var(--header-ink);
+  cursor: pointer;
+}
+
+.site-header--modern .menu-toggle__lines {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 18px;
+}
+
+.site-header--modern .menu-toggle__lines > span {
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform .18s ease,
+    opacity .18s ease;
+}
+
+.site-header--modern .menu-toggle__lines > span:nth-child(1) {
+  top: 1px;
+}
+
+.site-header--modern .menu-toggle__lines > span:nth-child(2) {
+  top: 8px;
+}
+
+.site-header--modern .menu-toggle__lines > span:nth-child(3) {
+  top: 15px;
+}
+
+.site-header--modern .menu-toggle[aria-expanded="true"]
+.menu-toggle__lines > span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.site-header--modern .menu-toggle[aria-expanded="true"]
+.menu-toggle__lines > span:nth-child(2) {
+  opacity: 0;
+}
+
+.site-header--modern .menu-toggle[aria-expanded="true"]
+.menu-toggle__lines > span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Responsivo */
+
+@media (max-width: 1150px) {
+  .site-header--modern .main-nav > ul {
+    gap: 3px;
+  }
+
+  .site-header--modern .main-nav a {
+    padding-right: 12px;
+    padding-left: 25px;
+    font-size: 12px;
+  }
+
+  .site-header--modern .main-nav a::before {
+    left: 10px;
+  }
+
+  .site-header--modern .header-register {
+    gap: 10px;
+    padding-inline: 14px;
+    font-size: 12px;
+  }
+
+  .site-header--modern .nav-shell.is-fixed .nav-brand img {
+    max-width: 105px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .site-header--modern .brand-row {
+    min-height: 118px;
+    gap: 24px;
+  }
+
+  .site-header--modern .brand img {
+    max-width: 220px;
+    max-height: 85px;
+  }
+
+  .site-header--modern .ad-banner {
+    height: 74px;
+  }
+
+  .site-header--modern .nav-wrap,
+  .site-header--modern .nav-shell.is-fixed .nav-wrap {
+    justify-content: space-between;
+    min-height: 62px;
+    gap: 16px;
+    padding-block: 8px;
+  }
+
+  .site-header--modern .nav-brand,
+  .site-header--modern .nav-shell.is-fixed .nav-brand {
+    display: flex;
+  }
+
+  .site-header--modern .nav-brand img,
+  .site-header--modern .nav-shell.is-fixed .nav-brand img {
+    width: auto;
+    max-width: 160px;
+    height: 44px;
+  }
+
+  .site-header--modern .menu-toggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  /* Oculto até ser aberto pelo botão. */
+  .site-header--modern .header-navigation {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    left: 0;
+    z-index: 1100;
+    display: none;
+    max-height: calc(
+      100dvh
+      - var(--cs-admin-offset, 0px)
+      - 90px
+    );
+    padding: 12px;
+    overflow-y: auto;
+    border: 1px solid var(--header-border);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgb(16 35 55 / 14%);
+  }
+
+  .site-header--modern.is-menu-open .header-navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    animation: csamba-mobile-menu-enter .18s ease-out both;
+  }
+
+  .site-header--modern .main-nav {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-header--modern .main-nav > ul {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+  }
+
+  .site-header--modern .main-nav li {
+    width: 100%;
+  }
+
+  .site-header--modern .main-nav a,
+  .site-header--modern .nav-shell.is-fixed .main-nav a {
+    min-height: 50px;
+    padding: 12px 18px 12px 32px;
+    font-size: 13px;
+    white-space: normal;
+  }
+
+  .site-header--modern .main-nav a::before,
+  .site-header--modern .nav-shell.is-fixed .main-nav a::before {
+    left: 14px;
+  }
+
+  .site-header--modern .header-register,
+  .site-header--modern .nav-shell.is-fixed .header-register {
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 12px 18px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-header--modern .topbar-inner {
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 7px;
+  }
+
+  .site-header--modern .top-search {
+    flex: 1;
+    min-width: 0;
+    gap: 7px;
+  }
+
+  .site-header--modern .top-search input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .site-header--modern .top-search button {
+    padding-inline: 8px;
+    font-size: 9px;
+  }
+
+  .site-header--modern .top-search > svg {
+    display: none;
+  }
+
+  .site-header--modern .member-links {
+    flex-shrink: 0;
+    padding-left: 12px;
+  }
+
+  /* O logo já aparece na navegação mobile. */
+  .site-header--modern .brand-row {
+    min-height: 0;
+    padding-block: 14px;
+  }
+
+  .site-header--modern .brand-row > .brand {
+    display: none;
+  }
+
+  .site-header--modern .ad-banner {
+    flex: 1;
+    height: 64px;
+    font-size: 12px;
+  }
+}
+
+@keyframes csamba-mobile-menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header--modern *,
+  .site-header--modern *::before,
+  .site-header--modern *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+/* Distribui os itens pela largura disponível no desktop. */
+@media (min-width: 1001px) {
+  .site-header--modern .main-nav > ul {
+    justify-content: space-between;
+    gap: clamp(12px, 2vw, 32px);
+  }
+
+  .site-header--modern .main-nav a {
+    padding-right: 22px;
+    padding-left: 33px;
+  }
+
+  /* A versão fixa precisa acomodar também o logo. */
+  .site-header--modern .nav-shell.is-fixed .main-nav > ul {
+    gap: 6px;
   }
 }

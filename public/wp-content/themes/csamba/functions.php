@@ -138,6 +138,12 @@ function csamba_register_content_types(): void
     'coluna' => ['Colunas', 'Coluna', 'dashicons-welcome-write-blog', true],
     'destaque' => ['Destaques', 'Destaque', 'dashicons-star-filled', false],
   ];
+  $archive_slugs = [
+    'banda'  => 'bandas',
+    'casa'   => 'casas',
+    'evento' => 'agenda',
+    'coluna' => 'colunas',
+  ];
   foreach ($types as $slug => [$plural, $singular, $icon, $archive]) {
     register_post_type($slug, [
       'labels' => [
@@ -147,8 +153,11 @@ function csamba_register_content_types(): void
         'edit_item' => "Editar $singular"
       ],
       'public' => true,
-      'has_archive' => $archive,
-      'rewrite' => ['slug' => $slug === 'banda' ? 'bandas' : ($slug === 'evento' ? 'agenda' : $slug)],
+      'has_archive' => $archive ? ($archive_slugs[$slug] ?? $slug) : false,
+      'rewrite' => [
+        'slug' => $slug,
+        'with_front' => false,
+      ],
       'menu_icon' => $icon,
       'supports' => $slug === 'destaque' ? ['title', 'page-attributes'] : ['title', 'editor', 'excerpt', 'thumbnail'],
       'show_in_rest' => true,
@@ -672,6 +681,64 @@ function csamba_register_acf_fields(): void
   ]);
 }
 add_action('acf/init', 'csamba_register_acf_fields');
+
+/* =========================
+   MENU PRINCIPAL
+   ========================= */
+add_filter('nav_menu_css_class', static function (
+  $classes,
+  $item,
+  $args
+) {
+    if (($args->theme_location ?? '') !== 'primary') {
+      return $classes;
+    }
+
+    $sections = [
+      'banda'  => 'bandas',
+      'coluna' => 'colunas',
+      'evento' => 'agenda',
+      'casa'   => 'casas',
+    ];
+
+    $matched_type = '';
+
+    foreach ($sections as $post_type => $section) {
+      $archive_url = get_post_type_archive_link($post_type);
+
+      $matches_archive = $item->type === 'post_type_archive'
+        && $item->object === $post_type;
+
+      $matches_url = $archive_url
+        && untrailingslashit($item->url)
+          === untrailingslashit($archive_url);
+
+      $matches_class = in_array(
+        'menu-' . $section,
+        $classes,
+        true
+      );
+
+      if ($matches_archive || $matches_url || $matches_class) {
+        $classes[] = 'menu-' . $section;
+        $matched_type = $post_type;
+        break;
+      }
+    }
+
+    // Mantém a editoria marcada ao acessar seu arquivo ou single.
+    if (
+      $matched_type
+      && (
+        is_post_type_archive($matched_type)
+        || is_singular($matched_type)
+      )
+    ) {
+      $classes[] = 'is-section-active';
+    }
+
+    return array_values(array_unique($classes));
+  }, 10, 3);
 
 function csamba_menu_link_color(array $atts, WP_Post $item, stdClass $args): array
 {
